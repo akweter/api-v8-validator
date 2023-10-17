@@ -1,7 +1,7 @@
 {
   "short_name": "Field Validator",
   "name": "GRA E-VAT API v8.2 Fields Validator",
-  "start_url": ".",
+  "start_url": "https://gra-payload-validator.netlify.app/",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",

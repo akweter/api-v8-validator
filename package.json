@@ -1,7 +1,12 @@
 {
   "name": "gra_api_validation",
-  "version": "0.1.0",
+  "version": "8.2.0",
   "private": true,
+  "author": {
+    "name": "GRA E-VAT Tech Team",
+    "email": "support3@gra.evat.com",
+    "url": "https://gra-payload-validator.netlify.app/"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
