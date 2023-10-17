@@ -21,7 +21,7 @@
   }
   
   export function vldtTotalLevy(totalLevy) {
-    if (totalLevy.length > 0 || typeof totalLevy === 'number' && !isNaN(totalLevy)) {
+    if ((totalLevy.length > 0) || (typeof totalLevy === 'number' && !isNaN(totalLevy))) {
       const regex = /^\d+(\.\d+)?$/;
       return regex.test(totalLevy.toString());
     } else {
@@ -65,7 +65,7 @@
   }
   
   export function vldtBusinessPartnerName(businessPartnerName) {
-    const regex = /^[\w\s!@#$%^&*()_+|~=`{}\[\]:";'<>?,.\/-]{3,}$/;
+    const regex = /^[\w\s!@#$%^&*()_+|~=`{}[\]:";'<>?,./-]{3,}$/;
     return regex.test(businessPartnerName);
   }
   
@@ -158,7 +158,7 @@
     }
   }
   
-  export function vldtDiscountAmountItem(discountAmountItem) {
+  export function vldtDiscountAmountItem(discount) {
     const regex = /^(\d+(\.\d+)?)?$/;
-    // return regex.test(discount);
+    return regex.test(discount);
   }
