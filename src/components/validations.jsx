@@ -21,11 +21,11 @@
   }
   
   export function vldtTotalLevy(totalLevy) {
-    if ((totalLevy.length > 0) || (typeof totalLevy === 'number' && !isNaN(totalLevy))) {
+    if ((typeof totalLevy === 'number' && !isNaN(totalLevy))) {
       const regex = /^\d+(\.\d+)?$/;
       return regex.test(totalLevy.toString());
     } else {
-      return false; // Not a number
+      return false;
     }
   }
   
@@ -107,7 +107,7 @@
   }
   
   export function vldtItemCategory(itemCategory) {
-    const regex = /^(EXM||CST|TRSM)$/;
+    const regex = /^(|EXM|TRSM|CST)$/;
     return regex.test(itemCategory);
   }
   
@@ -117,7 +117,7 @@
   
   export function vldtDescription(description) {
     const regex = /^[\w\s\d!@#$%^&*()_+-=]+$/;
-    return regex.test(description) && description.length >= 4;
+    return regex.test(description);
   }
   
   export function vldtQuantity(quantity) {
