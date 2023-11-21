@@ -15,7 +15,7 @@ import {
 const ValidateItems = (payload) => {
     let errors = [];
 
-    if (payload.items) {
+    if (payload) {
         const {
             itemCode,
             itemCategory,
@@ -30,49 +30,49 @@ const ValidateItems = (payload) => {
             discountAmount,
             batchCode,
             unitPrice
-        } = payload.items;
+        } = payload;
 
         // Validate item code
         if (vldtItemCode(itemCode) === false) {
             errors.push('Invalid item code.');
         }
-        
+
         if(vldtItemCategory(itemCategory) === false){
             errors.push('Invalid item category.');
         }
-        
+
         if(vldtExpireDate(expireDate) === false){
             errors.push('Invalid item expireDate.');
         }
-        
+
         if(vldtDescription(description) === false){
             errors.push('Invalid item description.');
         }
-        
+
         if(vldtQuantity(quantity) === false){
             errors.push('Invalid item quantity.');
         }
-        
+
         if(vldtLevyAmountA(levyAmountA) === false){
             errors.push('Invalid item levyAmountA.');
         }
-        
+
         if(vldtLevyAmountB(levyAmountB) === false){
             errors.push('Invalid item levyAmountB.');
         }
-        
+
         if(vldtLevyAmountC(levyAmountC) === false){
             errors.push('Invalid item levyAmountC.');
         }
-        
+
         if(vldtLevyAmountD(levyAmountD) === false){
             errors.push('Invalid item levyAmountD.');
         }
-        
+
         if(vldtLevyAmountE(levyAmountE) === false){
             errors.push('Invalid item levyAmountE.');
         }
-        
+
         if(vldtDiscountAmount(discountAmount) === false){
             errors.push('Invalid item discountAmount.');
         }

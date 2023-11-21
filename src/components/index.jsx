@@ -24,7 +24,7 @@ function PayloadValidator() {
         const { parseLoad } = payload;
         if (typeof parseLoad !== "string") {
             let headerErrors = ValidateHeaderFields(parseLoad);
-            let itemErrors = ValidateItems(parseLoad);
+            let itemErrors = ValidateItems(parseLoad.items);
 
             if (headerErrors === undefined) {
                 headerErrors = [];
