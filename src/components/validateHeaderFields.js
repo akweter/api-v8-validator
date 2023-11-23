@@ -57,7 +57,7 @@ const ValidateHeaderFields = (payload) =>{
             }
             // Invoice Numver
             if (vldtInvoiceNumber(invoiceNumber) === false) {
-                errors.push(`Invoice N0: Should be more than 4 chars and no spaces allowed`);
+                errors.push(`Invoice number should be more than 4 characters and no spaces allowed`);
             }
             // Total Levy
             if (vldtTotalLevy(totalLevy) === false) {

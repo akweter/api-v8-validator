@@ -17,12 +17,6 @@ function PayloadValidator() {
         saleType: "",
         discountType: "GENERAL",
         discountAmount: "",
-        nhil: "",
-        getfund: "",
-        covid: "",
-        cst: "",
-        tourism: "",
-        Subtotal: "",
     });
     const [itemlists, setItemLists] = useState({
         items: [],
@@ -43,12 +37,13 @@ function PayloadValidator() {
 
     useEffect(() => {
         if (itemlists.items.length > 0) {
-            compareValues(payload.parseLoad);
+            compareValues(payload.parseLoad.items, itemlists.items);
         }
     }, [itemlists.items, payload.parseLoad]);
 
     function handleValidation() {
         const { parseLoad } = payload;
+        const { items } = itemlists;
         if (typeof parseLoad !== 'string') {
             let headerErrors = ValidateHeaderFields(parseLoad);
             let itemErrors = ValidateItems(parseLoad);
@@ -61,19 +56,15 @@ function PayloadValidator() {
             const errors = [...headerErrors, ...itemErrors];
             setErrors(errors);
 
-            // Check if there are no errors
-            if (errors.length === 0) {
+            if (errors.length < 1) {
                 performComputations(parseLoad);
-                compareValues(parseLoad);
-                setValidationMessage('EVERYTHING LOOKS GREAT!');
+                compareValues(parseLoad.items, items);
             }
-            else {
-                setValidationMessage('');
-            }
+            else{
+                setValidationMessage('EVERYTHING LOOKS GREAT!');}
         }
         else {
             setErrors([]);
-            setValidationMessage('Not valid E-VAT JSON payload');
             alert('Not valid E-VAT JSON payload');
         }
     }
@@ -249,9 +240,6 @@ function PayloadValidator() {
         const totalVat = items.reduce(
             (total, item) => total + parseFloat(item.totalVat || 0), 0);
     
-        const subTotal = items.reduce(
-            (total, item) => total + parseFloat(item.itemSubtotal || 0), 0);
-    
         const totalAmount = items.reduce(
             (total, item) => total + parseFloat(item.totalAmount || 0), 0);
     
@@ -261,94 +249,67 @@ function PayloadValidator() {
         const discountAmount = items.reduce(
             (total, item) => total + parseFloat(item.discountAmountHead || 0), 0);
     
-        const nhil = items.reduce(
-            (total, item) => total + parseFloat(item.levyAmountA || 0), 0);
-    
-        const getfund = items.reduce(
-            (total, item) => total + parseFloat(item.levyAmountB || 0), 0);
-    
-        const covid = items.reduce(
-            (total, item) => total + parseFloat(item.levyAmountC || 0), 0);
-    
-        const cst = items.reduce(
-            (total, item) => total + parseFloat(item.levyAmountD || 0), 0);
-    
-        const tourism = items.reduce(
-            (total, item) => total + parseFloat(item.levyAmountE || 0), 0);
-    
         setHeader((header) => ({
             ...header,
-            totalLevy: totalLevy,
-            totalVat: totalVat,
+            totalLevy: totalLevy.toFixed(2),
+            totalVat: totalVat.toFixed(2),
             totalAmount: totalAmount.toFixed(2),
             voucherAmount: voucherAmount.toFixed(2),
             discountAmount: (discountAmount).toFixed(2),
-            nhil: nhil.toFixed(2),
-            getfund: getfund.toFixed(2),
-            covid: covid.toFixed(2),
-            cst: cst.toFixed(2),
-            tourism: tourism.toFixed(2),
-            Subtotal: subTotal.toFixed(2),
         }));
     };
-    
-    const compareValues = (userPayload) => {
-        const { items } = userPayload;
-        // let errors = [];
 
-        if (items && items.length > 0) {
-            // Compare each item's levy values
-            items.forEach((userItem, index) => {
-                const myItem = itemlists.items[index];
+    // Compare values
+    function compareValues(arr1, arr2) {
+        const itemErr = [];
 
-                // Check if myItem is defined before accessing properties
-                if (myItem) {
-                    // Compare levy values
-                    // if (userItem.levyAmountA !== myItem.levyAmountA) {
-                    //     errors.push(`Amt: ${myItem.levyAmountA} is the expected Levy A amount`);
-                    // }
-                    // if (userItem.levyAmountB !== myItem.levyAmountB) {
-                    //     errors.push(`Amt: ${myItem.levyAmountB} is the expected Levy B amount`);
-                    // }
-                    // if (userItem.levyAmountC !== myItem.levyAmountC) {
-                    //     errors.push(`Amt: ${myItem.levyAmountC} is the expected Levy C amount`);
-                    // }
-                    // if (userItem.levyAmountD !== myItem.levyAmountD) {
-                    //     errors.push(`Amt: ${myItem.levyAmountD} is the expected Levy D amount`);
-                    // }
-                    // if (userItem.levyAmountE !== myItem.levyAmountE) {
-                    //     errors.push(`Amt: ${myItem.levyAmountE} is the expected Levy E amount`);
-                    // }
+        const { parseLoad } = payload;
+        const { totalAmount, totalLevy, totalVat, discountAmount } = header;
+
+        if (totalAmount === 0 && totalAmount !== parseLoad.totalAmount) {
+            itemErr.push(`${totalAmount} is the expected total amount`);
+        }
+        if (totalLevy === 0 && totalLevy !== parseLoad.totalLevy) {
+            itemErr.push(`${totalLevy} is the expected total levy amount`);
+        }
+        if (totalVat === 0 && totalVat !== parseLoad.totalVat) {
+            itemErr.push(`${totalVat} is the expected total VAT`);
+        }
+        if (discountAmount === 0 && discountAmount !== parseLoad.discountAmount) {
+            itemErr.push(`${discountAmount} is the expected total discount amount`);
+        }
+
+        if (arr1 && arr1.length > 0) {
+            arr1.forEach((obj1, index1) => {
+                const obj2 = arr2.find(item => item.itemCode === obj1.itemCode);
+                if (!obj2) {
+                    // itemErr.push(`Object with itemCode ${obj1.itemCode} in the first array doesn't exist in the second array.`);
+                    return;
+                }
+                // Compare items specific fields for correct LEVY values
+                if (obj2.levyAmountA === 0 && obj1.levyAmountA !== obj2.levyAmountA) {
+                    itemErr.push(`Amt: ${obj2.levyAmountA} is the expected levyAmountA amount in item ${index1 + 1}`);
+                }
+                if (obj2.levyAmountB === 0 && obj1.levyAmountB !== obj2.levyAmountB) {
+                    itemErr.push(`Amt: ${obj2.levyAmountB} is the expected levyAmountB amount in item ${index1 + 1}`);
+                }
+                if (obj2.levyAmountC === 0 && obj1.levyAmountC !== obj2.levyAmountC) {
+                    itemErr.push(`Amt: ${obj2.levyAmountC} is the expected levyAmountC amount in item ${index1 + 1}`);
+                }
+                if (obj2.levyAmountD === 0 && obj1.levyAmountD !== obj2.levyAmountD) {
+                    itemErr.push(`Amt: ${obj2.levyAmountD} is the expected levyAmountD amount in item ${index1 + 1}`);
+                }
+                if (obj2.levyAmountE === 0 && obj1.levyAmountE !== obj2.levyAmountE) {
+                    itemErr.push(`Amt: ${obj2.levyAmountE} is the expected levyAmountE amount in item ${index1 + 1}`);
                 }
             });
-
-            // Compare total values
-            if (userPayload.totalAmount !== header.totalAmount) {
-            //     errors.push(`Amt: ${header.totalAmount} is the expected Total Amount`);
-            }
-            // if (userPayload.totalLevy !== header.totalLevy) {
-            //     errors.push(`Amt: ${header.totalLevy} is the expected Total Levy`);
-            // }
-            // if (userPayload.totalDiscount !== header.discountAmount) {
-            //     errors.push(`Amt ${header.discountAmount} is the expected Total Discount`);
-            // }
-            // if (userPayload.totalVAT !== header.totalVat) {
-            //     errors.push(`Amt: ${header.totalVat} is the expected Total VAT`);
-            // }
-            // console.log(userPayload);
-            // console.log(header);
-            // // Set the validation message based on the errors
-            // if (errors.length > 0) {
-            //     setValidationMessage(errors.join(' \n| '));
-            // } else {
-            //     setValidationMessage('EVERYTHING LOOKS GREAT!');
-            // }
-            // if (errors.length < 1) {
-
-            //     setValidationMessage('EVERYTHING LOOKS GREAT!');
-            // }
         }
-    };
+        if (itemErr.length > 0) {
+            setErrors(itemErr);
+        }
+        console.log(header);
+        console.log(parseLoad);
+    }
 
     return (
         <div style={{padding: "0 5%"}}>
