@@ -31,8 +31,9 @@ function PayloadValidator() {
         if (originalLoad) {
             try {
                 const parseLoad = JSON.parse(originalLoad);
-                setPayload((oldState) => ({ ...oldState, parseLoad: parseLoad }));
-            } catch (error) {
+                setPayload((oldState) => ({ ...oldState, parseLoad }));
+            }
+            catch (error) {
                 setPayload({ parseLoad: '' });
             }
         }
@@ -43,7 +44,6 @@ function PayloadValidator() {
             compareValues(payload.parseLoad);
         }
     }, [itemlists.items, payload.parseLoad]);
-    
 
     function handleValidation() {
         const { parseLoad } = payload;
@@ -68,10 +68,11 @@ function PayloadValidator() {
             else {
                 setValidationMessage('');
             }
-        } else {
+        }
+        else {
             setErrors([]);
             setValidationMessage('Not valid E-VAT JSON payload');
-            // alert('Not valid E-VAT JSON payload');
+            alert('Not valid E-VAT JSON payload');
         }
     }
 
@@ -226,7 +227,7 @@ function PayloadValidator() {
     const performComputations = (parsedPayload) => {
         const { calculationType, items } = parsedPayload;
     
-        // Set Inclusive & Exclusive tax
+        // // Set Inclusive & Exclusive tax
         if (calculationType === "INCLUSIVE") {
             handleInclusiveTaxes(items);
         } else {
@@ -292,57 +293,54 @@ function PayloadValidator() {
     const compareValues = (userPayload) => {
         const { items } = userPayload;
         let errors = [];
-    
-        // Compare each item's levy values
-        items.forEach((userItem, index) => {
-            const myItem = itemlists.items[index];
 
-            console.log('from the user', items);
-            console.log('from my end', itemlists.items);
-    
-            // Check if myItem is defined before accessing properties
-            if (myItem) {
-                // Compare levy values
-                const levyErrors = [];
-                if (userItem.levyAmountA !== myItem.levyAmountA) {
-                    levyErrors.push('A');
+        if (items && items.length > 0) {
+            // Compare each item's levy values
+            items.forEach((userItem, index) => {
+                const myItem = itemlists.items[index];
+
+                // Check if myItem is defined before accessing properties
+                if (myItem) {
+                    // Compare levy values
+                    if (userItem.levyAmountA !== myItem.levyAmountA) {
+                        errors.push(`Amt: ${myItem.levyAmountA} is the expected Levy A amount`);
+                    }
+                    if (userItem.levyAmountB !== myItem.levyAmountB) {
+                        errors.push(`Amt: ${myItem.levyAmountB} is the expected Levy B amount`);
+                    }
+                    if (userItem.levyAmountC !== myItem.levyAmountC) {
+                        errors.push(`Amt: ${myItem.levyAmountC} is the expected Levy C amount`);
+                    }
+                    if (userItem.levyAmountD !== myItem.levyAmountD) {
+                        errors.push(`Amt: ${myItem.levyAmountD} is the expected Levy D amount`);
+                    }
+                    if (userItem.levyAmountE !== myItem.levyAmountE) {
+                        errors.push(`Amt: ${myItem.levyAmountE} is the expected Levy E amount`);
+                    }
                 }
-                if (userItem.levyAmountB !== myItem.levyAmountB) {
-                    levyErrors.push('B');
-                }
-                if (userItem.levyAmountC !== myItem.levyAmountC) {
-                    levyErrors.push('C');
-                }
-                if (userItem.levyAmountD !== myItem.levyAmountD) {
-                    levyErrors.push('D');
-                }
-                if (userItem.levyAmountE !== myItem.levyAmountE) {
-                    levyErrors.push('E');
-                }
-                if (levyErrors.length > 0) {
-                    errors.push(`Error in item ${index + 1}: Levy values (${levyErrors.join(', ')}) are incorrect`);
-                }
+            });
+
+            // Compare total values
+            // if (userPayload.totalAmount !== header.totalAmount) {
+            //     errors.push(`Amt: ${header.totalAmount} is the expected Total Amount`);
+            // }
+            // if (userPayload.totalLevy !== header.totalLevy) {
+            //     errors.push(`Amt: ${header.totalLevy} is the expected Total Levy`);
+            // }
+            // if (userPayload.totalDiscount !== header.discountAmount) {
+            //     errors.push(`Amt ${header.discountAmount} is the expected Total Discount`);
+            // }
+            // if (userPayload.totalVAT !== header.totalVat) {
+            //     errors.push(`Amt: ${header.totalVat} is the expected Total VAT`);
+            // }
+            console.log(userPayload);
+            console.log(header);
+            // Set the validation message based on the errors
+            if (errors.length > 0) {
+                setValidationMessage(errors.join(' \n| '));
+            } else {
+                setValidationMessage('EVERYTHING LOOKS GREAT!');
             }
-        });
-
-        // Compare total values
-        if (userPayload.totalAmount !== header.totalAmount) {
-            errors.push(`Error: ${header.totalAmount} is the expected Total Amount`);
-        }
-        if (userPayload.totalLevy !== header.totalLevy) {
-            errors.push(`Error: ${header.totalLevy} is the expected Total Levy`);
-        }
-        if (userPayload.totalDiscount !== header.discountAmount) {
-            errors.push(`Error: ${header.discountAmount} is the expected Total Discount`);
-        }
-        if (userPayload.totalVAT !== header.totalVat) {
-            errors.push(`Error: ${header.totalVat} is the expected Total VAT`);
-        }
-        // Set the validation message based on the errors
-        if (errors.length > 0) {
-            setValidationMessage(errors.join('\n'));
-        } else {
-            setValidationMessage('EVERYTHING LOOKS GREAT!');
         }
     };
 

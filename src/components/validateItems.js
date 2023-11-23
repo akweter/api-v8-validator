@@ -40,7 +40,7 @@ const ValidateItems = (payload) => {
             }
             const missingFields = keyValues.filter(key => !Object.keys(item).includes(key));
             if (missingFields.length > 0) {
-                errors.push(`Missing required fields (${missingFields.join(', ')}) in item ${index + 1}`);
+                errors.push(`Incorrect required fields (${missingFields.join(', ')}) in item ${index + 1}`);
             }
         });
     }
