@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography } from '@mui/material';
-import { PlaceHolder } from './placeholder';
+// import { PlaceHolder } from './placeholder';
 import ValidateHeaderFields from './validateHeaderFields';
 import ValidateItems from './validateItems';
+
+/* eslint-disable */
 
 function PayloadValidator() {
     const [payload, setPayload] = useState({ originalLoad: [], parseLoad: [] });
@@ -292,7 +294,7 @@ function PayloadValidator() {
     
     const compareValues = (userPayload) => {
         const { items } = userPayload;
-        let errors = [];
+        // let errors = [];
 
         if (items && items.length > 0) {
             // Compare each item's levy values
@@ -321,9 +323,9 @@ function PayloadValidator() {
             });
 
             // Compare total values
-            // if (userPayload.totalAmount !== header.totalAmount) {
+            if (userPayload.totalAmount !== header.totalAmount) {
             //     errors.push(`Amt: ${header.totalAmount} is the expected Total Amount`);
-            // }
+            }
             // if (userPayload.totalLevy !== header.totalLevy) {
             //     errors.push(`Amt: ${header.totalLevy} is the expected Total Levy`);
             // }
@@ -333,28 +335,31 @@ function PayloadValidator() {
             // if (userPayload.totalVAT !== header.totalVat) {
             //     errors.push(`Amt: ${header.totalVat} is the expected Total VAT`);
             // }
-            console.log(userPayload);
-            console.log(header);
-            // Set the validation message based on the errors
-            if (errors.length > 0) {
-                setValidationMessage(errors.join(' \n| '));
-            } else {
-                setValidationMessage('EVERYTHING LOOKS GREAT!');
-            }
+            // console.log(userPayload);
+            // console.log(header);
+            // // Set the validation message based on the errors
+            // if (errors.length > 0) {
+            //     setValidationMessage(errors.join(' \n| '));
+            // } else {
+            //     setValidationMessage('EVERYTHING LOOKS GREAT!');
+            // }
+            // if (errors.length < 1) {
+
+            //     setValidationMessage('EVERYTHING LOOKS GREAT!');
+            // }
         }
     };
 
     return (
-        <>
+        <div style={{padding: "0 5%"}}>
             <Typography
                 variant='h3'
                 style={{ textDecoration: '3px dotted black underline' }}
                 mb={2}
-                color={'red'}
+                color={'green'}
                 align='center'
             >
-                GRA E-<span style={{ color: 'yellow' }}>VAT V8.2</span>
-                <span style={{ color: 'green' }}> Validator</span>
+                GRA E- VAT V8.2 Validator
             </Typography>
             <div
                 style={{
@@ -375,7 +380,7 @@ function PayloadValidator() {
                                 originalLoad: e.target.value,
                             }))
                         }
-                        placeholder={PlaceHolder.value}
+                        placeholder={'Paste GRA E-VAT Payload Here'}
                     />
                     <br />
                     <Button
@@ -425,7 +430,18 @@ function PayloadValidator() {
                     )}
                 </span>
             </div>
-        </>
+            <div style={{
+                    position: "fixed",
+                    justifyContent: "center",
+                    backgroundColor: "#F5927D",
+                    margin: "10px",
+                    padding: "5px",
+                    right: "5%"
+                }}
+            >
+                <strong>Ensure to click on the Validate button anytime you make changes to your payload</strong>
+            </div>
+        </div>
     );
 }
 

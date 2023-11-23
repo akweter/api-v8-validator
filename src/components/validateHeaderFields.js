@@ -61,55 +61,55 @@ const ValidateHeaderFields = (payload) =>{
             }
             // Total Levy
             if (vldtTotalLevy(totalLevy) === false) {
-                errors.push(`Total Levy: Incorrect and Invalid`);
+                errors.push(`Total Levy should be numeric`);
             }
             // Username
             if (vldtUserName(userName) === false) {
-                errors.push(`Username: cannot have symbols`);
+                errors.push(`Username should not have symbols or whitespace`);
             }
             // flag
             if (vldtFlag(flag) === false) {
-                errors.push('Invalid Flag. It only be INVOICE, REFUND, REFUND_CANCELATION, PURCHASE, PURCHASE_CANCELATION');
+                errors.push('Flag should be either INVOICE, REFUND, REFUND_CANCELATION, PURCHASE, PURCHASE_CANCELATION');
             }
             // Calculation Type
             if (vldtCalculationType(calculationType) === false) {
-                errors.push(`CalculationType: Invalid Type: It can only be INCLUSIVE or EXCLUSIVE without WHITESPACE`);
+                errors.push(`CalculationType should be either INCLUSIVE or EXCLUSIVE without WHITESPACE`);
             }
             // Total VAT
             if (vldtTotalVat(totalVat) === false) {
-                errors.push(`Total VAT: Invalid VAt value`);
+                errors.push(`Total VAT should be numeric`);
             }
             // Transaction Date
             if (vldtTransactionDate(transactionDate) === false) {
-                errors.push(`Transaction Date: Date format can only be (yyyy-mm-dd) or (UTC time)`);
+                errors.push(`Transaction Date format should be (yyyy-mm-dd) or (UTC) Eg. (2023-11-20) or (2023-01-20T08:43:28Z)`);
             }
             // Total Amount
             if (vldtTotalAmount(totalAmount) === false) {
-                errors.push(`Total Amount: The Total Amount should be: 0.0 `);
+                errors.push(`Total amount should be numeric `);
             }
             // Voucher Amount
             if (vldtVoucherAmount(voucherAmount) === false) {
-                errors.push(`Voucher Amount: Incorrect Pattern`);
+                errors.push(`Voucher amount should be numeric`);
             }
             // Business Partner Name
             if (vldtBusinessPartnerName(businessPartnerName) === false) {
-                errors.push(`B. Partner Name: Incorrect Values`);
+                errors.push(`The pattern for Business Partner Name is incorrect`);
             }
             // Business Partner Tin
             if (vldtBusinessPartnerTin(businessPartnerTin) === false) {
-                errors.push(`B. Partner Tin: Can only be 11 or 15 chars without space`);
+                errors.push(`Business Partner Tin should only be 11 or 15 character long without space`);
             }
             // Sales Type
             if (vldtSaleType(saleType) === false) {
-                errors.push(`Sale Type: Invalid Sales Type. Allowed value are NORMAL, EXPORT, EXEMPTED`);
+                errors.push(`Allowed Sale Type values are NORMAL, EXPORT, EXEMPTED`);
             }
             // Discount Type
             if (vldtDiscountType(discountType) === false) {
-                errors.push(`Discount Type: Invalid Discount Type. Allowed values are GENERAL, SELECTIVE`);
+                errors.push(`Allowed Discount Type values are GENERAL, SELECTIVE`);
             }
             // Discount Amount
             if (vldtDiscountAmount(discountAmount) === false) {
-                errors.push(`Discount Amount: Should be number`);
+                errors.push(`Discount Amount should be numeric`);
             }
         }
     }
