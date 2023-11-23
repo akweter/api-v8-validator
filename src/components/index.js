@@ -304,21 +304,21 @@ function PayloadValidator() {
                 // Check if myItem is defined before accessing properties
                 if (myItem) {
                     // Compare levy values
-                    if (userItem.levyAmountA !== myItem.levyAmountA) {
-                        errors.push(`Amt: ${myItem.levyAmountA} is the expected Levy A amount`);
-                    }
-                    if (userItem.levyAmountB !== myItem.levyAmountB) {
-                        errors.push(`Amt: ${myItem.levyAmountB} is the expected Levy B amount`);
-                    }
-                    if (userItem.levyAmountC !== myItem.levyAmountC) {
-                        errors.push(`Amt: ${myItem.levyAmountC} is the expected Levy C amount`);
-                    }
-                    if (userItem.levyAmountD !== myItem.levyAmountD) {
-                        errors.push(`Amt: ${myItem.levyAmountD} is the expected Levy D amount`);
-                    }
-                    if (userItem.levyAmountE !== myItem.levyAmountE) {
-                        errors.push(`Amt: ${myItem.levyAmountE} is the expected Levy E amount`);
-                    }
+                    // if (userItem.levyAmountA !== myItem.levyAmountA) {
+                    //     errors.push(`Amt: ${myItem.levyAmountA} is the expected Levy A amount`);
+                    // }
+                    // if (userItem.levyAmountB !== myItem.levyAmountB) {
+                    //     errors.push(`Amt: ${myItem.levyAmountB} is the expected Levy B amount`);
+                    // }
+                    // if (userItem.levyAmountC !== myItem.levyAmountC) {
+                    //     errors.push(`Amt: ${myItem.levyAmountC} is the expected Levy C amount`);
+                    // }
+                    // if (userItem.levyAmountD !== myItem.levyAmountD) {
+                    //     errors.push(`Amt: ${myItem.levyAmountD} is the expected Levy D amount`);
+                    // }
+                    // if (userItem.levyAmountE !== myItem.levyAmountE) {
+                    //     errors.push(`Amt: ${myItem.levyAmountE} is the expected Levy E amount`);
+                    // }
                 }
             });
 
