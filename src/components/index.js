@@ -439,7 +439,7 @@ function PayloadValidator() {
                     right: "5%"
                 }}
             >
-                <strong>Ensure to click on the Validate button anytime you make changes to your payload</strong>
+                <strong>Click on the Validate button anytime you make changes to your payload</strong>
             </div>
         </div>
     );
