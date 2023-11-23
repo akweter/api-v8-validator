@@ -298,7 +298,7 @@ function PayloadValidator() {
             const myItem = itemlists.items[index];
 
             console.log('from the user', items);
-            console.log('from my end', myItem);
+            console.log('from my end', itemlists.items);
     
             // Check if myItem is defined before accessing properties
             if (myItem) {
@@ -319,27 +319,25 @@ function PayloadValidator() {
                 if (userItem.levyAmountE !== myItem.levyAmountE) {
                     levyErrors.push('E');
                 }
-    
                 if (levyErrors.length > 0) {
                     errors.push(`Error in item ${index + 1}: Levy values (${levyErrors.join(', ')}) are incorrect`);
                 }
             }
         });
-    
+
         // Compare total values
         if (userPayload.totalAmount !== header.totalAmount) {
-            errors.push('Error: Total Amount is incorrect');
+            errors.push(`Error: ${header.totalAmount} is the expected Total Amount`);
         }
         if (userPayload.totalLevy !== header.totalLevy) {
-            errors.push('Error: Total Levy is incorrect');
+            errors.push(`Error: ${header.totalLevy} is the expected Total Levy`);
         }
         if (userPayload.totalDiscount !== header.discountAmount) {
-            errors.push('Error: Total Discount is incorrect');
+            errors.push(`Error: ${header.discountAmount} is the expected Total Discount`);
         }
         if (userPayload.totalVAT !== header.totalVat) {
-            errors.push('Error: Total VAT is incorrect');
+            errors.push(`Error: ${header.totalVat} is the expected Total VAT`);
         }
-    
         // Set the validation message based on the errors
         if (errors.length > 0) {
             setValidationMessage(errors.join('\n'));
@@ -347,7 +345,7 @@ function PayloadValidator() {
             setValidationMessage('EVERYTHING LOOKS GREAT!');
         }
     };
-    
+
     return (
         <>
             <Typography
