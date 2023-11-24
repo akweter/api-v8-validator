@@ -19,7 +19,6 @@ function PayloadValidator() {
         discountAmount: "",
     });
     const [itemlists, setItemLists] = useState({ items: []});
-    const [userChanged, setUserChanged] = useState(false);
 
     useEffect(() => {
         const { originalLoad } = payload;
@@ -38,10 +37,8 @@ function PayloadValidator() {
         if (payload.parseLoad.items && itemlists.items) {
             performComputations(itemlists, payload.parseLoad);
             compareValues(payload.parseLoad.items, itemlists.items);
-
-            setUserChanged(false);
         }
-    }, [userChanged, itemlists.items, payload.parseLoad]);
+    }, [itemlists.items, payload.parseLoad]);
     
     // handle general and selective discount
     const handleDiscountSubtotal = (items) => {
@@ -239,16 +236,16 @@ function PayloadValidator() {
         const { parseLoad } = payload;
         const { totalAmount, totalLevy, totalVat, discountAmount } = header;
 
-        if (totalAmount === 0 && totalAmount !== parseLoad.totalAmount) {
+        if (totalAmount !== null || totalAmount !== parseLoad.totalAmount) {
             itemErr.push(`${totalAmount} is the expected total amount`);
         }
-        if (totalLevy === 0 && totalLevy !== parseLoad.totalLevy) {
+        if (totalLevy !== null && totalLevy !== parseLoad.totalLevy) {
             itemErr.push(`${totalLevy} is the expected total levy amount`);
         }
-        if (totalVat === 0 && totalVat !== parseLoad.totalVat) {
+        if (totalVat !== null && totalVat !== parseLoad.totalVat) {
             itemErr.push(`${totalVat} is the expected total VAT`);
         }
-        if (discountAmount === 0 && discountAmount !== parseLoad.discountAmount) {
+        if (discountAmount !== null && discountAmount !== parseLoad.discountAmount) {
             itemErr.push(`${discountAmount} is the expected total discount amount`);
         }
 
@@ -260,19 +257,19 @@ function PayloadValidator() {
                     return;
                 }
                 // Compare items specific fields for correct LEVY values
-                if (obj2.levyAmountA === 0 && obj1.levyAmountA !== obj2.levyAmountA) {
+                if (obj1.levyAmountA === obj2.levyAmountA) {
                     itemErr.push(`Amt: ${obj2.levyAmountA} is the expected levyAmountA amount in item ${index1 + 1}`);
                 }
-                if (obj2.levyAmountB === 0 && obj1.levyAmountB !== obj2.levyAmountB) {
+                if (obj1.levyAmountB === obj2.levyAmountB) {
                     itemErr.push(`Amt: ${obj2.levyAmountB} is the expected levyAmountB amount in item ${index1 + 1}`);
                 }
-                if (obj2.levyAmountC === 0 && obj1.levyAmountC !== obj2.levyAmountC) {
+                if (obj1.levyAmountC === obj2.levyAmountC) {
                     itemErr.push(`Amt: ${obj2.levyAmountC} is the expected levyAmountC amount in item ${index1 + 1}`);
                 }
-                if (obj2.levyAmountD === 0 && obj1.levyAmountD !== obj2.levyAmountD) {
+                if (obj1.levyAmountD === obj2.levyAmountD) {
                     itemErr.push(`Amt: ${obj2.levyAmountD} is the expected levyAmountD amount in item ${index1 + 1}`);
                 }
-                if (obj2.levyAmountE === 0 && obj1.levyAmountE !== obj2.levyAmountE) {
+                if (obj1.levyAmountE !== obj2.levyAmountE) {
                     itemErr.push(`Amt: ${obj2.levyAmountE} is the expected levyAmountE amount in item ${index1 + 1}`);
                 }
             });
@@ -300,8 +297,9 @@ function PayloadValidator() {
             const inErrors = [...headerErrors, ...itemErrors];
             setErrors(inErrors);
 
-            setUserChanged(true);
-            console.log('header', header);
+            // Perform various computations
+            performComputations(itemlists, parseLoad);            
+            compareValues(parseLoad.items, items);
 
             if (inErrors.length === 0 && errors.length === 0) {
                 setValidationMessage('EVERYTHING LOOKS GREAT!');
