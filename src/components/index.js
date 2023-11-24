@@ -34,41 +34,7 @@ function PayloadValidator() {
             }
         }
     }, [payload.originalLoad]);
-
-    useEffect(() => {
-        if (itemlists.items.length > 0) {
-            compareValues(payload.parseLoad.items, itemlists.items);
-        }
-    }, [itemlists.items, payload.parseLoad]);
-
-    function handleValidation() {
-        const { parseLoad } = payload;
-        const { items } = itemlists;
-        if (typeof parseLoad !== 'string') {
-            let headerErrors = ValidateHeaderFields(parseLoad);
-            let itemErrors = ValidateItems(parseLoad);
-            if (headerErrors === undefined) {
-                headerErrors = [];
-            }
-            if (itemErrors === undefined) {
-                itemErrors = [];
-            }
-            const errors = [...headerErrors, ...itemErrors];
-            setErrors(errors);
-
-            if (errors.length < 1) {
-                performComputations(parseLoad);
-                compareValues(parseLoad.items, items);
-            }
-            else{
-                setValidationMessage('EVERYTHING LOOKS GREAT!');}
-        }
-        else {
-            setErrors([]);
-            alert('Not valid E-VAT JSON payload');
-        }
-    }
-
+    
     // handle general and selective discount
     const handleDiscountSubtotal = (items) => {
         const { discountType } = payload.parseLoad;
@@ -148,7 +114,6 @@ function PayloadValidator() {
                 totalVat: twoDP(totalVat),
                 discountAmount: twoDP(discountAmount),
                 discountAmountHead: twoDP(quantity * discountAmount),
-                itemSubtotal: twoDP(itemSubtotal),
                 totalAmount: twoDP(quantity * unitPrice),
             };
         });
@@ -206,7 +171,6 @@ function PayloadValidator() {
                 totalVat: twoDP(totalVat),
                 discountAmount: twoDP(discountAmount),
                 discountAmountHead: twoDP(quantity * discountAmount),
-                itemSubtotal: twoDP(itemSubtotal - discountAmount),
                 totalAmount: twoDP(quantity * unitPrice),
             };
         });
@@ -217,14 +181,15 @@ function PayloadValidator() {
         }));
     };
 
-    const performComputations = (parsedPayload) => {
-        const { calculationType, items } = parsedPayload;
+    const performComputations = (itemlists, parseLoad) => {
+        const { items } = itemlists;
     
+        const { calculationType } = parseLoad;
         // // Set Inclusive & Exclusive tax
         if (calculationType === "INCLUSIVE") {
-            handleInclusiveTaxes(items);
+            handleInclusiveTaxes(parseLoad.items);
         } else {
-            handleExclusiveTaxes(items);
+            handleExclusiveTaxes(parseLoad.items);
         }
     
         // Compute final/total taxes and levies
@@ -307,8 +272,39 @@ function PayloadValidator() {
         if (itemErr.length > 0) {
             setErrors(itemErr);
         }
-        console.log(header);
-        console.log(parseLoad);
+        console.log('header ', header);
+        console.log('parseLoad ',parseLoad);
+        console.log('itemlist ', itemlists);
+    }
+
+    function handleValidation() {        
+        const { parseLoad } = payload;
+        const { items } = itemlists;
+
+        if (typeof parseLoad !== 'string') {
+            let headerErrors = ValidateHeaderFields(parseLoad);
+            let itemErrors = ValidateItems(parseLoad);
+            
+            if (headerErrors === undefined) {
+                headerErrors = [];
+            }
+            if (itemErrors === undefined) {
+                itemErrors = [];
+            }
+            const errors = [...headerErrors, ...itemErrors];
+            setErrors(errors);
+
+            if (errors.length < 1) {
+                performComputations(itemlists, parseLoad);
+                compareValues(parseLoad.items, items);
+            }
+            else{
+                setValidationMessage('EVERYTHING LOOKS GREAT!');}
+        }
+        else {
+            setErrors([]);
+            alert('Not valid E-VAT JSON payload');
+        }
     }
 
     return (
