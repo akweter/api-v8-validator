@@ -236,7 +236,7 @@ function PayloadValidator() {
         const { parseLoad } = payload;
         const { totalAmount, totalLevy, totalVat, discountAmount } = header;
 
-        if (totalAmount !== null || totalAmount !== parseLoad.totalAmount) {
+        if (totalAmount !== null && totalAmount !== parseLoad.totalAmount) {
             itemErr.push(`${totalAmount} is the expected total amount instead of ${parseLoad.totalAmount}`);
         }
         if (totalLevy !== null && totalLevy !== parseLoad.totalLevy) {
@@ -257,23 +257,25 @@ function PayloadValidator() {
                     return;
                 }
                 // Compare items specific fields for correct LEVY values
-                if (obj1.levyAmountA === obj2.levyAmountA) {
+                if (obj2.levyAmountA !== null && obj1.levyAmountA !== obj2.levyAmountA) {
                     itemErr.push(`${obj2.levyAmountA} is the expected levyAmountA amount in item ${index1 + 1} and not ${obj1.levyAmountA}`);
                 }
-                if (obj1.levyAmountB === obj2.levyAmountB) {
+                if (obj2.levyAmountB !== null && obj1.levyAmountB !== obj2.levyAmountB) {
                     itemErr.push(`Amt: ${obj2.levyAmountB} is the expected levyAmountB amount in item ${index1 + 1} and not ${obj1.levyAmountB}`);
                 }
-                if (obj1.levyAmountC === obj2.levyAmountC) {
+                if (obj2.levyAmountC !== null && obj1.levyAmountC !== obj2.levyAmountC) {
                     itemErr.push(`Amt: ${obj2.levyAmountC} is the expected levyAmountC amount in item ${index1 + 1} and not ${obj1.levyAmountC}`);
                 }
-                if (obj1.levyAmountD === obj2.levyAmountD) {
+                if (obj2.levyAmountD !== null && obj1.levyAmountD !== obj2.levyAmountD) {
                     itemErr.push(`Amt: ${obj2.levyAmountD} is the expected levyAmountD amount in item ${index1 + 1} and not ${obj1.levyAmountD}`);
                 }
-                if (obj1.levyAmountE !== obj2.levyAmountE) {
+                if (obj2.levyAmountE !== null && obj1.levyAmountE !== obj2.levyAmountE) {
                     itemErr.push(`Amt: ${obj2.levyAmountE} is the expected levyAmountE amount in item ${index1 + 1} and not ${obj1.levyAmountE}`);
                 }
             });
         }
+        
+        // Display errors only if there are more than zero errors
         if (itemErr.length > 0) {
             setErrors(itemErr);
         }
