@@ -371,6 +371,10 @@ function PayloadValidator() {
             >
                 <span>
                     <textarea
+                        style={{
+                        backgroundImage('GRA.png')
+
+                        }}
                         type='text'
                         rows='40'
                         cols='60'
