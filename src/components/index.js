@@ -18,9 +18,8 @@ function PayloadValidator() {
         discountType: "GENERAL",
         discountAmount: "",
     });
-    const [itemlists, setItemLists] = useState({
-        items: [],
-    });
+    const [itemlists, setItemLists] = useState({ items: []});
+    const [userChanged, setUserChanged] = useState(false);
 
     useEffect(() => {
         const { originalLoad } = payload;
@@ -34,6 +33,15 @@ function PayloadValidator() {
             }
         }
     }, [payload.originalLoad]);
+    
+    useEffect(() => {
+        if (payload.parseLoad.items && itemlists.items) {
+            performComputations(itemlists, payload.parseLoad);
+            compareValues(payload.parseLoad.items, itemlists.items);
+
+            setUserChanged(false);
+        }
+    }, [userChanged, itemlists.items, payload.parseLoad]);
     
     // handle general and selective discount
     const handleDiscountSubtotal = (items) => {
@@ -274,6 +282,7 @@ function PayloadValidator() {
         }
     }
 
+    // Final validation after user click
     function handleValidation() {        
         const { parseLoad } = payload;
         const { items } = itemlists;
@@ -291,9 +300,10 @@ function PayloadValidator() {
             const inErrors = [...headerErrors, ...itemErrors];
             setErrors(inErrors);
 
-            if (inErrors.length === 0) {
-                performComputations(itemlists, parseLoad);
-                compareValues(parseLoad.items, items);
+            setUserChanged(true);
+            console.log('header', header);
+
+            if (inErrors.length === 0 && errors.length === 0) {
                 setValidationMessage('EVERYTHING LOOKS GREAT!');
             } else {
                 setValidationMessage('');
@@ -301,7 +311,7 @@ function PayloadValidator() {
         }
         else {
             setErrors([]);
-            alert('Not valid E-VAT JSON payload'); // }
+            alert('Not valid E-VAT JSON payload');
         }
     }
 
