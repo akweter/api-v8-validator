@@ -272,9 +272,6 @@ function PayloadValidator() {
         if (itemErr.length > 0) {
             setErrors(itemErr);
         }
-        console.log('header ', header);
-        console.log('parseLoad ',parseLoad);
-        console.log('itemlist ', itemlists);
     }
 
     function handleValidation() {        
@@ -291,19 +288,20 @@ function PayloadValidator() {
             if (itemErrors === undefined) {
                 itemErrors = [];
             }
-            const errors = [...headerErrors, ...itemErrors];
-            setErrors(errors);
+            const inErrors = [...headerErrors, ...itemErrors];
+            setErrors(inErrors);
 
-            if (errors.length < 1) {
+            if (inErrors.length === 0) {
                 performComputations(itemlists, parseLoad);
                 compareValues(parseLoad.items, items);
+                setValidationMessage('EVERYTHING LOOKS GREAT!');
+            } else {
+                setValidationMessage('');
             }
-            else{
-                setValidationMessage('EVERYTHING LOOKS GREAT!');}
         }
         else {
             setErrors([]);
-            alert('Not valid E-VAT JSON payload');
+            alert('Not valid E-VAT JSON payload'); // }
         }
     }
 
