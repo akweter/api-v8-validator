@@ -221,11 +221,11 @@ function PayloadValidator() {
     
         setHeader((header) => ({
             ...header,
-            totalLevy: totalLevy.toFixed(2),
-            totalVat: totalVat.toFixed(2),
-            totalAmount: totalAmount.toFixed(2),
-            voucherAmount: voucherAmount.toFixed(2),
-            discountAmount: (discountAmount).toFixed(2),
+            totalLevy: totalLevy.toFixed(3),
+            totalVat: totalVat.toFixed(3),
+            totalAmount: totalAmount.toFixed(3),
+            voucherAmount: voucherAmount.toFixed(3),
+            discountAmount: (discountAmount).toFixed(3),
         }));
     };
 
