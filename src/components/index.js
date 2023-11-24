@@ -237,16 +237,16 @@ function PayloadValidator() {
         const { totalAmount, totalLevy, totalVat, discountAmount } = header;
 
         if (totalAmount !== null || totalAmount !== parseLoad.totalAmount) {
-            itemErr.push(`${totalAmount} is the expected total amount`);
+            itemErr.push(`${totalAmount} is the expected total amount instead of ${parseLoad.totalAmount}`);
         }
         if (totalLevy !== null && totalLevy !== parseLoad.totalLevy) {
-            itemErr.push(`${totalLevy} is the expected total levy amount`);
+            itemErr.push(`${totalLevy} is the expected total levy amount instead of ${parseLoad.totalLevy}`);
         }
         if (totalVat !== null && totalVat !== parseLoad.totalVat) {
-            itemErr.push(`${totalVat} is the expected total VAT`);
+            itemErr.push(`${totalVat} is the expected total VAT instead of ${parseLoad.totalVat}`);
         }
         if (discountAmount !== null && discountAmount !== parseLoad.discountAmount) {
-            itemErr.push(`${discountAmount} is the expected total discount amount`);
+            itemErr.push(`${discountAmount} is the expected total discount amount instead of ${parseLoad.discountAmount}`);
         }
 
         if (arr1 && arr1.length > 0) {
