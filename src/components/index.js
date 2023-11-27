@@ -436,7 +436,7 @@ function PayloadValidator() {
           </div>
           <div
             style={{
-              position: 'fixed',
+            //   position: 'fixed',
               justifyContent: 'center',
               backgroundColor: '#F5927D',
               margin: '10px',
