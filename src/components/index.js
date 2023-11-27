@@ -223,11 +223,11 @@ function PayloadValidator() {
     
         setHeader((header) => ({
             ...header,
-            totalLevy: totalLevy.toFixed(3),
-            totalVat: totalVat.toFixed(3),
-            totalAmount: totalAmount.toFixed(3),
-            voucherAmount: voucherAmount.toFixed(3),
-            discountAmount: (discountAmount).toFixed(3),
+            totalLevy: totalLevy.toFixed(2),
+            totalVat: totalVat.toFixed(2),
+            totalAmount: totalAmount.toFixed(2),
+            voucherAmount: voucherAmount.toFixed(2),
+            discountAmount: (discountAmount).toFixed(2),
         }));
     };
 
@@ -324,7 +324,7 @@ function PayloadValidator() {
                 variant='h3'
                 style={{ textDecoration: '3px dotted black underline' }}
                 mb={2}
-                color={'green'}
+                color='#6D1693'
                 align='center'
             >
                 GRA E- VAT V8.2 Validator
@@ -340,7 +340,7 @@ function PayloadValidator() {
                 <span>
                     <textarea
                         type='text'
-                        rows='40'
+                        rows='35'
                         cols='60'
                         onChange={(e) =>
                             setPayload((oldState) => ({
@@ -379,14 +379,22 @@ function PayloadValidator() {
                         Clear Data
                     </Button>
                 </span>
-                <span>
+                <span style={{background: '#D9F7F5'}}>
                     {errors ? (
                         errors.map((error, index) => (
                             <table key={index}>
                                 <thead>
                                     <tr>
                                         <td>
-                                            <h3>{`${index + 1}: ${error}`}</h3>
+                                            <span 
+                                                style={{
+                                                    fontFamily: 'inherit',
+                                                    cursor: 'copy',
+                                                    textDecoration: 'none',
+                                                    fontSize: '17px',
+                                                    fontVariant: 'oldstyle-nums'
+                                                }}
+                                            >{`${index + 1}: ${error}`}</span>
                                         </td>
                                     </tr>
                                 </thead>
