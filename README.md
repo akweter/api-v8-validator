@@ -2,11 +2,11 @@
 
 ## Overview
 
-The GRA EVAT API Validator System is a comprehensive solution developed by the dedicated staff of SDW (Spring Data Works) to validate GRA EVAT API VERSION 8.2. This system is built using React.js and deployed on [netlify](https://gra-payload-validator.netlify.app) for live viewing and testing.
+The GRA EVAT API Validator System is a comprehensive solution developed by the dedicated staff of GRA E-VAT Tech Support Team to validate GRA EVAT API VERSION 8.2. This system is built using React.js and deployed on [netlify](https://gra-payload-validator.netlify.app) for live viewing and testing.
 
 ## Contributors
 
-The development and maintenance of this system are made possible by the collective efforts of the entire SDW staff.
+The development and maintenance of this system are made possible by the collective efforts of the entire GRA E-VAT Tech Support Team.
 
 ## Features
 
@@ -26,7 +26,7 @@ Visit [netlify](https://gra-payload-validator.netlify.app) to experience the GRA
 
 ## Future Releases
 
-The SDW team is committed to continuous improvement and may introduce additional features in future releases. Stay tuned for updates and enhancements.
+The GRA E-VAT Tech Support Team is committed to continuous improvement and may introduce additional features in future releases. Stay tuned for updates and enhancements.
 
 ## Getting Started
 
