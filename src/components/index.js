@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 // import { PlaceHolder } from './placeholder';
 import ValidateHeaderFields from './validateHeaderFields';
 import ValidateItems from './validateItems';
@@ -71,121 +71,130 @@ function PayloadValidator() {
 
     // handle inclusive VAT computations
     const handleInclusiveTaxes = (items) => {
-        const updatedItems = items.map((item) => {
-            const { quantity, unitPrice, itemCategory, discountAmount } = item;
-            const itemSubtotal = handleDiscountSubtotal(item);
+        if(items){
+            const updatedItems = items.map((item) => {
+                const { quantity, unitPrice, itemCategory, discountAmount } = item;
+                const itemSubtotal = handleDiscountSubtotal(item);
 
-            const graValue = itemSubtotal / 1.219;
-            let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalLevy, totalVat, vatableAmt;
+                const graValue = itemSubtotal / 1.219;
+                let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalLevy, totalVat, vatableAmt;
 
-            if (itemCategory === "") {
-                levyAmountA = levyAmountB = (2.5 / 100) * graValue;
-                levyAmountC = (1 / 100) * graValue;
-                levyAmountD = levyAmountE = "";
-                vatableAmt = graValue + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
-                totalVat = 0.15 * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
-            }
-            else if(itemCategory === "EXM"){
-                levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = totalLevy = "";
-            }
-            else if(itemCategory === "TRSM"){
-                const graValueTRSM = itemSubtotal / 1.229;
-                
-                levyAmountA = levyAmountB = (2.5 / 100) * graValueTRSM;
-                levyAmountC = (1 / 100) * graValueTRSM;
-                levyAmountD = "";
-                levyAmountE = (1 / 100) * graValueTRSM;
-                vatableAmt = graValueTRSM + levyAmountA + levyAmountB + levyAmountC;
-                totalVat = (15 / 100) * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
-            }
-            else if(itemCategory === "CST"){
-                const graValueCST = itemSubtotal / 1.2765;
-                levyAmountA = levyAmountB = (2.5 / 100) * graValueCST;
-                levyAmountC = (1 / 100) * graValueCST;
-                levyAmountD = (5 / 100) * graValueCST;
-                levyAmountE = "";
-                vatableAmt = graValueCST + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
-                totalVat = (15 / 100) * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
-            }
-            return {
-                ...item,
-                levyAmountA: twoDP(levyAmountA),
-                levyAmountB: twoDP(levyAmountB),
-                levyAmountC: twoDP(levyAmountC),
-                levyAmountD: twoDP(levyAmountD),
-                levyAmountE: twoDP(levyAmountE),
-                totalLevy: twoDP(totalLevy),
-                totalVat: twoDP(totalVat),
-                discountAmount: twoDP(discountAmount),
-                discountAmountHead: twoDP(quantity * discountAmount),
-                totalAmount: twoDP(quantity * unitPrice),
-            };
-        });
-        setItemLists((list) => ({
-            ...list,
-            items: updatedItems,
-        }));
+                if (itemCategory === "") {
+                    levyAmountA = levyAmountB = (2.5 / 100) * graValue;
+                    levyAmountC = (1 / 100) * graValue;
+                    levyAmountD = levyAmountE = "";
+                    vatableAmt = graValue + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                    totalVat = 0.15 * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                else if(itemCategory === "EXM"){
+                    levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = totalLevy = "";
+                }
+                else if(itemCategory === "TRSM"){
+                    const graValueTRSM = itemSubtotal / 1.229;
+                    
+                    levyAmountA = levyAmountB = (2.5 / 100) * graValueTRSM;
+                    levyAmountC = (1 / 100) * graValueTRSM;
+                    levyAmountD = "";
+                    levyAmountE = (1 / 100) * graValueTRSM;
+                    vatableAmt = graValueTRSM + levyAmountA + levyAmountB + levyAmountC;
+                    totalVat = (15 / 100) * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                else if(itemCategory === "CST"){
+                    const graValueCST = itemSubtotal / 1.2765;
+                    levyAmountA = levyAmountB = (2.5 / 100) * graValueCST;
+                    levyAmountC = (1 / 100) * graValueCST;
+                    levyAmountD = (5 / 100) * graValueCST;
+                    levyAmountE = "";
+                    vatableAmt = graValueCST + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
+                    totalVat = (15 / 100) * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                return {
+                    ...item,
+                    levyAmountA: twoDP(levyAmountA),
+                    levyAmountB: twoDP(levyAmountB),
+                    levyAmountC: twoDP(levyAmountC),
+                    levyAmountD: twoDP(levyAmountD),
+                    levyAmountE: twoDP(levyAmountE),
+                    totalLevy: twoDP(totalLevy),
+                    totalVat: twoDP(totalVat),
+                    discountAmount: twoDP(discountAmount),
+                    discountAmountHead: twoDP(quantity * discountAmount),
+                    totalAmount: twoDP(quantity * unitPrice),
+                };
+            });
+            setItemLists((list) => ({
+                ...list,
+                items: updatedItems,
+            }));
+        }
+        else{
+            return;
+        }
     };
 
     // handle Exclusive Taxes
     const handleExclusiveTaxes = (items) => {
-        const updatedItems = items.map((item) => {
-            const { quantity, unitPrice, itemCategory, discountAmount } = item;
-            const itemSubtotal = handleDiscountSubtotal(item);
+        if(items){
+            const updatedItems = items.map((item) => {
+                const { quantity, unitPrice, itemCategory, discountAmount } = item;
+                const itemSubtotal = handleDiscountSubtotal(item);
 
-            let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalLevy, totalVat, vatableAmt;
+                let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalLevy, totalVat, vatableAmt;
 
-            if (itemCategory === "") {
-                levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
-                levyAmountC = (1 / 100) * itemSubtotal;
-                levyAmountD = levyAmountE = "";
-                vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
-                totalVat = 0.15 * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
-            }
-            else if(itemCategory === "EXM"){
-                levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = totalLevy = "";
-            }
-            else if(itemCategory === "TRSM"){
-                levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
-                levyAmountC = (1 / 100) * itemSubtotal;
-                levyAmountD = "";
-                levyAmountE = (1 / 100) * itemSubtotal;
-                vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC;
-                totalVat = 0.15 * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountE;
-            }
-            else if(itemCategory === "CST"){
-                levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
-                levyAmountC = (1 / 100) * itemSubtotal;
-                levyAmountD = (5 / 100) * itemSubtotal;
-                levyAmountE = "";
-                vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
-                totalVat = (15 / 100) * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
-            }
-            return {
-                ...item,
-                levyAmountA: twoDP(levyAmountA),
-                levyAmountB: twoDP(levyAmountB),
-                levyAmountC: twoDP(levyAmountC),
-                levyAmountD: twoDP(levyAmountD),
-                levyAmountE: twoDP(levyAmountE),
-                totalLevy: twoDP(totalLevy),
-                totalVat: twoDP(totalVat),
-                discountAmount: twoDP(discountAmount),
-                discountAmountHead: twoDP(quantity * discountAmount),
-                totalAmount: twoDP(quantity * unitPrice),
-            };
-        });
-
-        setItemLists((list) => ({
-            ...list,
-            items: updatedItems,
-        }));
+                if (itemCategory === "") {
+                    levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
+                    levyAmountC = (1 / 100) * itemSubtotal;
+                    levyAmountD = levyAmountE = "";
+                    vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                    totalVat = 0.15 * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                else if(itemCategory === "EXM"){
+                    levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = totalLevy = "";
+                }
+                else if(itemCategory === "TRSM"){
+                    levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
+                    levyAmountC = (1 / 100) * itemSubtotal;
+                    levyAmountD = "";
+                    levyAmountE = (1 / 100) * itemSubtotal;
+                    vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC;
+                    totalVat = 0.15 * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountE;
+                }
+                else if(itemCategory === "CST"){
+                    levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
+                    levyAmountC = (1 / 100) * itemSubtotal;
+                    levyAmountD = (5 / 100) * itemSubtotal;
+                    levyAmountE = "";
+                    vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
+                    totalVat = (15 / 100) * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                return {
+                    ...item,
+                    levyAmountA: twoDP(levyAmountA),
+                    levyAmountB: twoDP(levyAmountB),
+                    levyAmountC: twoDP(levyAmountC),
+                    levyAmountD: twoDP(levyAmountD),
+                    levyAmountE: twoDP(levyAmountE),
+                    totalLevy: twoDP(totalLevy),
+                    totalVat: twoDP(totalVat),
+                    discountAmount: twoDP(discountAmount),
+                    discountAmountHead: twoDP(quantity * discountAmount),
+                    totalAmount: twoDP(quantity * unitPrice),
+                };
+            });
+            setItemLists((list) => ({
+                ...list,
+                items: updatedItems,
+            }));
+        }
+        else{
+            return;
+        }
     };
 
     const performComputations = (itemlists, parseLoad) => {
@@ -319,15 +328,24 @@ function PayloadValidator() {
     }
 
     return (
-        <div style={{padding: "0 5%"}}>
+        <div
+            style={{
+                padding: "0 10%",
+                backgroundImage: 'url("https://www.freevector.com/uploads/vector/preview/8610/FreeVector-Vector-Background-With-Circles.jpg")',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'repeat-y',
+                height: '100vh',
+                margin: -8
+            }}
+        >
             <Typography
                 variant='h3'
-                style={{ textDecoration: '3px dotted black underline' }}
                 mb={2}
                 color='#6D1693'
                 align='center'
+                p={3}
             >
-                GRA E- VAT V8.2 Validator
+                GRA E-VAT API V8.2 Validator
             </Typography>
             <div
                 style={{
@@ -337,76 +355,79 @@ function PayloadValidator() {
                     gap: '20px',
                 }}
             >
-                <span>
-                    <textarea
-                        type='text'
-                        rows='35'
-                        cols='60'
-                        onChange={(e) =>
-                            setPayload((oldState) => ({
-                                ...oldState,
-                                originalLoad: e.target.value,
-                            }))
-                        }
-                        placeholder={'Paste GRA E-VAT Payload Here'}
-                    />
-                    <br />
-                    <Button
-                        variant='outlined'
-                        onClick={handleValidation}
-                        style={{
-                            background: '#F0FFFE',
-                            color: 'green',
-                            fontWeight: 'bold',
-                            fontSize: '20px',
-                            marginRight: '20px',
-                        }}
-                    >
-                        Validate
-                    </Button>
-                    <Button
-                        variant='outlined'
-                        onClick={() => {
-                            window.location.reload();
-                        }}
-                        style={{
-                            background: '#F0FFFE',
-                            color: 'red',
-                            fontWeight: 'bold',
-                            fontSize: '20px',
-                        }}
-                    >
-                        Clear Data
-                    </Button>
-                </span>
-                <span style={{background: '#D9F7F5'}}>
-                    {errors ? (
-                        errors.map((error, index) => (
-                            <table key={index}>
-                                <thead>
-                                    <tr>
-                                        <td>
-                                            <span 
-                                                style={{
-                                                    fontFamily: 'inherit',
-                                                    cursor: 'copy',
-                                                    textDecoration: 'none',
-                                                    fontSize: '17px',
-                                                    fontVariant: 'oldstyle-nums'
-                                                }}
-                                            >{`${index + 1}: ${error}`}</span>
-                                        </td>
-                                    </tr>
-                                </thead>
-                            </table>
-                        ))
-                    ) : null}
-                    {validationMessage && (
-                        <div style={{ color: 'blue', fontWeight: 'bold' }}>
-                            {validationMessage}
-                        </div>
-                    )}
-                </span>
+                <Grid container spacing={0}>
+                    <Grid item sx={12} sm={8} md={6}>
+                        <textarea
+                            type='text'
+                            rows='40'
+                            cols='80'
+                            style={{background: '#F3FEFC'}}
+                            onChange={(e) =>
+                                setPayload((oldState) => ({
+                                    ...oldState,
+                                    originalLoad: e.target.value,
+                                }))
+                            }
+                            placeholder={'Paste GRA E-VAT Payload Here'}
+                        />
+                        <br />
+                        <Button
+                            variant='outlined'
+                            onClick={handleValidation}
+                            style={{
+                                background: '#F0FFFE',
+                                color: 'green',
+                                fontWeight: 'bold',
+                                fontSize: '20px',
+                                marginRight: '20px',
+                            }}
+                        >
+                            Validate
+                        </Button>
+                        <Button
+                            variant='outlined'
+                            onClick={() => {
+                                window.location.reload();
+                            }}
+                            style={{
+                                background: '#F0FFFE',
+                                color: 'red',
+                                fontWeight: 'bold',
+                                fontSize: '20px',
+                            }}
+                        >
+                            Clear Data
+                        </Button>
+                    </Grid>
+                    <Grid item sx={12} sm={8} md={6} style={{background: '#F3FEFC'}} >
+                        {errors ? (
+                            errors.map((error, index) => (
+                                <table key={index}>
+                                    <thead>
+                                        <tr>
+                                            <td>
+                                                <span 
+                                                    style={{
+                                                        fontFamily: 'inherit',
+                                                        cursor: 'copy',
+                                                        textDecoration: 'none',
+                                                        fontSize: '17px',
+                                                        fontVariant: 'oldstyle-nums',
+                                                    }}
+                                                >{`${index + 1}: ${error}`}</span>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            ))
+                        ) : null}
+                        {validationMessage && (
+                            <div style={{ color: 'blue', fontWeight: 'bold' }}>
+                                {validationMessage}
+                            </div>
+                        )}
+                    </Grid>
+                </Grid>
             </div>
             <div style={{
                     position: "fixed",
