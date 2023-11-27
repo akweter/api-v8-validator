@@ -343,16 +343,16 @@ function PayloadValidator() {
         >
           <div
             style={{
-            //   position: 'fixed',
-              justifyContent: 'center',
-              backgroundColor: '#F5927D',
-              justifyContent: 'space-between'
+                textAlign: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#F5927D',
+                justifyContent: 'space-between'
             }}
           >
             <strong>Use the Validate button anytime you make changes</strong>
           </div>
           <Typography
-            variant='h3'
+            variant='h4'
             mb={2}
             color='#6D1693'
             align='center'
