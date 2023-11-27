@@ -349,14 +349,14 @@ function PayloadValidator() {
                 justifyContent: 'space-between'
             }}
           >
-            <strong>Use the Validate button anytime you make changes</strong>
+            <strong>Click the Validate button thrice even if results output automatically</strong>
           </div>
           <Typography
-            variant='h4'
             mb={2}
             color='#6D1693'
             align='center'
             p={3}
+            fontSize={16}
           >
             GRA E-VAT API V8.2 Validator
           </Typography>
