@@ -341,6 +341,16 @@ function PayloadValidator() {
             flexDirection: 'column',
           }}
         >
+          <div
+            style={{
+            //   position: 'fixed',
+              justifyContent: 'center',
+              backgroundColor: '#F5927D',
+              justifyContent: 'space-between'
+            }}
+          >
+            <strong>Use the Validate button anytime you make changes</strong>
+          </div>
           <Typography
             variant='h3'
             mb={2}
@@ -393,7 +403,7 @@ function PayloadValidator() {
                 <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
                     <textarea
                         type='text'
-                        rows='40'
+                        rows='35'
                         style={{ width: '100%' }}
                         onChange={(e) =>
                             setPayload((oldState) => ({
@@ -433,18 +443,6 @@ function PayloadValidator() {
                     </Button>
                 </Grid>
             </Grid>
-          </div>
-          <div
-            style={{
-            //   position: 'fixed',
-              justifyContent: 'center',
-              backgroundColor: '#F5927D',
-              margin: '10px',
-              padding: '5px',
-              right: '5%',
-            }}
-          >
-            <strong>Use the Validate button anytime you make changes</strong>
           </div>
         </div>
       );yy      
