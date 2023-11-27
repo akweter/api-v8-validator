@@ -329,119 +329,125 @@ function PayloadValidator() {
 
     return (
         <div
-            style={{
-                padding: "0 10%",
-                backgroundImage: 'url("https://www.freevector.com/uploads/vector/preview/8610/FreeVector-Vector-Background-With-Circles.jpg")',
-                backgroundSize: 'cover',
-                backgroundRepeat: 'repeat-y',
-                height: '100vh',
-                margin: -8
-            }}
+          style={{
+            padding: "0 5%",
+            backgroundImage: 'url("https://www.freevector.com/uploads/vector/preview/8610/FreeVector-Vector-Background-With-Circles.jpg")',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'repeat-y',
+            minHeight: '100vh',
+            margin: -8,
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
         >
-            <Typography
-                variant='h3'
-                mb={2}
-                color='#6D1693'
-                align='center'
-                p={3}
-            >
-                GRA E-VAT API V8.2 Validator
-            </Typography>
-            <div
+          <Typography
+            variant='h3'
+            mb={2}
+            color='#6D1693'
+            align='center'
+            p={3}
+          >
+            GRA E-VAT API V8.2 Validator
+          </Typography>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
+            }}
+          >
+            <Grid container spacing={2}
                 style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    flexItem: '1',
-                    gap: '20px',
+                    background: '#FDF3FF ',
+                    cursor: 'cell'
                 }}
             >
-                <Grid container spacing={0}>
-                    <Grid item sx={12} sm={8} md={6}>
-                        <textarea
-                            type='text'
-                            rows='40'
-                            cols='80'
-                            style={{background: '#F3FEFC'}}
-                            onChange={(e) =>
-                                setPayload((oldState) => ({
-                                    ...oldState,
-                                    originalLoad: e.target.value,
-                                }))
-                            }
-                            placeholder={'Paste GRA E-VAT Payload Here'}
-                        />
-                        <br />
-                        <Button
-                            variant='outlined'
-                            onClick={handleValidation}
-                            style={{
-                                background: '#F0FFFE',
-                                color: 'green',
-                                fontWeight: 'bold',
-                                fontSize: '20px',
-                                marginRight: '20px',
-                            }}
-                        >
-                            Validate
-                        </Button>
-                        <Button
-                            variant='outlined'
-                            onClick={() => {
-                                window.location.reload();
-                            }}
-                            style={{
-                                background: '#F0FFFE',
-                                color: 'red',
-                                fontWeight: 'bold',
-                                fontSize: '20px',
-                            }}
-                        >
-                            Clear Data
-                        </Button>
-                    </Grid>
-                    <Grid item sx={12} sm={8} md={6} style={{background: '#F3FEFC'}} >
-                        {errors ? (
-                            errors.map((error, index) => (
-                                <table key={index}>
-                                    <thead>
-                                        <tr>
-                                            <td>
-                                                <span 
-                                                    style={{
-                                                        fontFamily: 'inherit',
-                                                        cursor: 'copy',
-                                                        textDecoration: 'none',
-                                                        fontSize: '17px',
-                                                        fontVariant: 'oldstyle-nums',
-                                                    }}
-                                                >{`${index + 1}: ${error}`}</span>
-                                            </td>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            ))
-                        ) : null}
-                        {validationMessage && (
-                            <div style={{ color: 'blue', fontWeight: 'bold' }}>
-                                {validationMessage}
-                            </div>
-                        )}
-                    </Grid>
+                <Grid item xs={12} md={6}>
+                    {errors ? (
+                    errors.map((error, index) => (
+                        <table key={index}>
+                        <thead>
+                            <tr>
+                            <td>
+                                <span
+                                style={{
+                                    fontFamily: 'inherit',
+                                    textDecoration: 'none',
+                                    fontSize: '17px',
+                                    fontVariant: 'oldstyle-nums',
+                                }}
+                                >{`${index + 1}: ${error}`}</span>
+                            </td>
+                            </tr>
+                        </thead>
+                        </table>
+                    ))
+                    ) : null}
+                    {validationMessage && (
+                    <div style={{ color: 'blue', fontWeight: 'bold' }}>
+                        {validationMessage}
+                    </div>
+                    )}
                 </Grid>
-            </div>
-            <div style={{
-                    position: "fixed",
-                    justifyContent: "center",
-                    backgroundColor: "#F5927D",
-                    margin: "10px",
-                    padding: "5px",
-                    right: "5%"
-                }}
-            >
-                <strong>Use the Validate button anytime you make a change</strong>
-            </div>
+                <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
+                    <textarea
+                        type='text'
+                        rows='40'
+                        style={{ width: '100%' }}
+                        onChange={(e) =>
+                            setPayload((oldState) => ({
+                            ...oldState,
+                            originalLoad: e.target.value,
+                            }))
+                        }
+                        placeholder={'Paste GRA E-VAT Payload Here'}
+                    />
+                    <br />
+                    <Button
+                    variant='outlined'
+                    onClick={handleValidation}
+                    style={{
+                        background: '#F0FFFE',
+                        color: 'green',
+                        fontWeight: 'bold',
+                        fontSize: '20px',
+                        marginRight: '20px',
+                    }}
+                    >
+                    Validate
+                    </Button>
+                    <Button
+                    variant='outlined'
+                    onClick={() => {
+                        window.location.reload();
+                    }}
+                    style={{
+                        background: '#F0FFFE',
+                        color: 'red',
+                        fontWeight: 'bold',
+                        fontSize: '20px',
+                    }}
+                    >
+                    Clear Data
+                    </Button>
+                </Grid>
+            </Grid>
+          </div>
+          <div
+            style={{
+              position: 'fixed',
+              justifyContent: 'center',
+              backgroundColor: '#F5927D',
+              margin: '10px',
+              padding: '5px',
+              right: '5%',
+            }}
+          >
+            <strong>Use the Validate button anytime you make changes</strong>
+          </div>
         </div>
-    );
+      );yy      
 }
 
 export default PayloadValidator;
