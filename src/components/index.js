@@ -19,6 +19,7 @@ function PayloadValidator() {
         discountAmount: "",
     });
     const [itemlists, setItemLists] = useState({ items: []});
+    const [load, setLoad] = useState(false);
 
     useEffect(() => {
         const { originalLoad } = payload;
@@ -37,6 +38,7 @@ function PayloadValidator() {
         if (payload.parseLoad.items && itemlists.items) {
             performComputations(itemlists, payload.parseLoad);
             compareValues(payload.parseLoad.items, itemlists.items);
+            setLoad(false);
         }
     }, [itemlists.items, payload.parseLoad]);
     
@@ -308,6 +310,7 @@ function PayloadValidator() {
             } else {
                 setValidationMessage('');
             }
+            setLoad(false);
         }
         else {
             setErrors([]);
@@ -404,7 +407,7 @@ function PayloadValidator() {
                     right: "5%"
                 }}
             >
-                <strong>Click on the Validate button anytime you make changes to your payload</strong>
+                <strong>Use the Validate button in case computations are not done automatically</strong>
             </div>
         </div>
     );
