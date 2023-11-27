@@ -385,7 +385,9 @@ function PayloadValidator() {
                             <table key={index}>
                                 <thead>
                                     <tr>
-                                        <td>{`${index + 1}: ${error}`}</td>
+                                        <td>
+                                            <h3>{`${index + 1}: ${error}`}</h3>
+                                        </td>
                                     </tr>
                                 </thead>
                             </table>
@@ -407,7 +409,7 @@ function PayloadValidator() {
                     right: "5%"
                 }}
             >
-                <strong>Use the Validate button in case computations are not done automatically</strong>
+                <strong>Use the Validate button anytime you make a change</strong>
             </div>
         </div>
     );
