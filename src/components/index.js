@@ -349,14 +349,14 @@ function PayloadValidator() {
                 justifyContent: 'space-between'
             }}
           >
-            <strong>Click the Validate button thrice even if results output automatically</strong>
+            <i>Click the Validate button thrice even if results output automatically</i>
           </div>
           <Typography
             mb={2}
             color='#6D1693'
             align='center'
             p={3}
-            fontSize={16}
+            fontSize={20}
           >
             GRA E-VAT API V8.2 Validator
           </Typography>
