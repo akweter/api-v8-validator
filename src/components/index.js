@@ -7,9 +7,8 @@ import ValidateItems from './validateItems';
 /* eslint-disable */
 
 function PayloadValidator() {
-    const [payload, setPayload] = useState({ originalLoad: [], parseLoad: [] });
-    const [errors, setErrors] = useState([]);
-    const [validationMessage, setValidationMessage] = useState('');
+    const [payload, setPayload] = useState({ originalLoad: [], parseLoad: [] }); // Basket that store user pasted payload
+    const [itemlists, setItemLists] = useState({ items: []}); // Basket where we make our computations
     const [ header, setHeader] = useState({
         totalLevy: "",
         totalVat: "",
@@ -17,10 +16,12 @@ function PayloadValidator() {
         saleType: "",
         discountType: "GENERAL",
         discountAmount: "",
-    });
-    const [itemlists, setItemLists] = useState({ items: []});
+    }); // Basket that stores the payload header values
+    const [errors, setErrors] = useState([]); // Basket that stores the errors
     const [load, setLoad] = useState(false);
+    const [validationMessage, setValidationMessage] = useState('');
 
+    // Check the user payload if it is valid and push the data into parseLoad basket
     useEffect(() => {
         const { originalLoad } = payload;
         if (originalLoad) {
@@ -34,6 +35,7 @@ function PayloadValidator() {
         }
     }, [payload.originalLoad]);
     
+    // Perform automatic computation and compares tax calculations
     useEffect(() => {
         if (payload.parseLoad.items && itemlists.items) {
             performComputations(itemlists, payload.parseLoad);
@@ -42,7 +44,7 @@ function PayloadValidator() {
         }
     }, [itemlists.items, payload.parseLoad]);
     
-    // handle general and selective discount
+    // compute general and selective discount
     const handleDiscountSubtotal = (items) => {
         const { discountType } = payload.parseLoad;
         const { quantity, unitPrice, discountAmount } = items;
@@ -69,7 +71,7 @@ function PayloadValidator() {
         }
     }
 
-    // handle inclusive VAT computations
+    // perform inclusive VAT computations
     const handleInclusiveTaxes = (items) => {
         if(items){
             const updatedItems = items.map((item) => {
@@ -121,7 +123,7 @@ function PayloadValidator() {
                     totalLevy: twoDP(totalLevy),
                     totalVat: twoDP(totalVat),
                     discountAmount: twoDP(discountAmount),
-                    discountAmountHead: twoDP(quantity * discountAmount),
+                    // discountAmountHead: twoDP(quantity * discountAmount),
                     totalAmount: twoDP(quantity * unitPrice),
                 };
             });
@@ -135,7 +137,7 @@ function PayloadValidator() {
         }
     };
 
-    // handle Exclusive Taxes
+    // Perform Exclusive Taxes
     const handleExclusiveTaxes = (items) => {
         if(items){
             const updatedItems = items.map((item) => {
@@ -183,7 +185,7 @@ function PayloadValidator() {
                     totalLevy: twoDP(totalLevy),
                     totalVat: twoDP(totalVat),
                     discountAmount: twoDP(discountAmount),
-                    discountAmountHead: twoDP(quantity * discountAmount),
+                    // discountAmountHead: twoDP(quantity * discountAmount),
                     totalAmount: twoDP(quantity * unitPrice),
                 };
             });
@@ -228,7 +230,7 @@ function PayloadValidator() {
             (total, item) => total + parseFloat(item.voucherAmount || 0), 0);
     
         const discountAmount = items.reduce(
-            (total, item) => total + parseFloat(item.discountAmountHead || 0), 0);
+            (total, item) => total + parseFloat(item.discountAmount || 0), 0);
     
         setHeader((header) => ({
             ...header,
@@ -327,6 +329,7 @@ function PayloadValidator() {
         }
     }
 
+    // Return the viewer on the browser
     return (
         <div
           style={{
@@ -445,7 +448,7 @@ function PayloadValidator() {
             </Grid>
           </div>
         </div>
-      );yy      
+    );   
 }
 
 export default PayloadValidator;
