@@ -4,7 +4,7 @@ import { Button, Grid, Typography } from '@mui/material';
 import ValidateHeaderFields from './validateHeaderFields';
 import ValidateItems from './validateItems';
 
-// /* eslint-disable */
+/* eslint-disable */
 
 function PayloadValidator() {
     const [payload, setPayload] = useState({ originalLoad: [], parseLoad: [] }); // Basket that store user pasted payload
