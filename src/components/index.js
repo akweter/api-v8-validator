@@ -250,16 +250,16 @@ function PayloadValidator() {
         const { totalAmount, totalLevy, totalVat, discountAmount } = header;
 
         if (totalAmount !== null && Math.abs(totalAmount - parseLoad.totalAmount) > 0.0001) {
-            itemErr.push(`¢${totalAmount} is the expected total amount instead of ¢${parseLoad.totalAmount}`);
+            itemErr.push(`${parseLoad.currency} ${totalAmount} is the expected total amount instead of ${parseLoad.currency} ${parseLoad.totalAmount}`);
         }
         if (totalLevy !== null && Math.abs(totalLevy - parseLoad.totalLevy) > 0.0001) {
-            itemErr.push(`¢${totalLevy} is the expected total levy amount instead of ¢${parseLoad.totalLevy}`);
+            itemErr.push(`${parseLoad.currency} ${totalLevy} is the expected total levy amount instead of ${parseLoad.currency} ${parseLoad.totalLevy}`);
         }
         if (totalVat !== null && Math.abs(totalVat - parseLoad.totalVat) > 0.0001) {
-            itemErr.push(`¢${totalVat} is the expected total VAT instead of ¢${parseLoad.totalVat}`);
+            itemErr.push(`${parseLoad.currency} ${totalVat} is the expected total VAT instead of ${parseLoad.currency} ${parseLoad.totalVat}`);
         }
         if (discountAmount !== null && Math.abs(discountAmount - parseLoad.discountAmount) > 0.0001) {
-            itemErr.push(`¢${discountAmount} is the expected total discount amount instead of ¢${parseLoad.discountAmount}`);
+            itemErr.push(`${parseLoad.currency} ${discountAmount} is the expected total discount amount instead of ${parseLoad.currency} ${parseLoad.discountAmount}`);
         }
 
         if (userPayload && userPayload.length > 0) {
