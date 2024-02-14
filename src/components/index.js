@@ -355,7 +355,7 @@ function PayloadValidator() {
                 justifyContent: 'space-between'
             }}
           >
-            <i>Click the Validate button twice even if the results output automatically</i>
+            <i>Efficiency at work is the tool that turns effort into accomplishment.</i>
           </div>
           <Typography
             mb={2}
