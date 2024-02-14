@@ -271,22 +271,22 @@ function PayloadValidator() {
                 }
                 // Compare items specific fields for correct LEVY values
                 if (obj2.levyAmountA !== null && Math.abs(obj1.levyAmountA - obj2.levyAmountA) > 0.0001) {
-                    itemErr.push(`¢${obj2.levyAmountA} is the expected levyAmountA amount in item ${index1 + 1} and not ¢${obj1.levyAmountA}`);
+                    itemErr.push(`${parseLoad.currency} ${obj2.levyAmountA} is the expected levyAmountA amount in item ${index1 + 1} and not ${parseLoad.currency} ${obj1.levyAmountA}`);
                 }
                 if (obj2.levyAmountB !== null && Math.abs(obj1.levyAmountB - obj2.levyAmountB) > 0.0001) {
-                    itemErr.push(`¢${obj2.levyAmountB} is the expected levyAmountB amount in item ${index1 + 1} and not ¢${obj1.levyAmountB}`);
+                    itemErr.push(`${parseLoad.currency} ${obj2.levyAmountB} is the expected levyAmountB amount in item ${index1 + 1} and not ${parseLoad.currency} ${obj1.levyAmountB}`);
                 }
                 if (obj2.levyAmountC !== null && Math.abs(obj1.levyAmountC - obj2.levyAmountC) > 0.0001) {
-                    itemErr.push(`¢${obj2.levyAmountC} is the expected levyAmountC amount in item ${index1 + 1} and not ¢${obj1.levyAmountC}`);
+                    itemErr.push(`${parseLoad.currency} ${obj2.levyAmountC} is the expected levyAmountC amount in item ${index1 + 1} and not ${parseLoad.currency} ${obj1.levyAmountC}`);
                 }
                 if (obj2.levyAmountD !== null && Math.abs(obj1.levyAmountD - obj2.levyAmountD) > 0.0001) {
-                    itemErr.push(`¢${obj2.levyAmountD} is the expected levyAmountD amount in item ${index1 + 1} and not ¢${obj1.levyAmountD}`);
+                    itemErr.push(`${parseLoad.currency} ${obj2.levyAmountD} is the expected levyAmountD amount in item ${index1 + 1} and not ${parseLoad.currency} ${obj1.levyAmountD}`);
                 }
                 if (obj2.levyAmountE !== null && Math.abs(obj1.levyAmountE - obj2.levyAmountE) > 0.0001) {
-                    itemErr.push(`¢${obj2.levyAmountE} is the expected levyAmountE amount in item ${index1 + 1} and not ¢${obj1.levyAmountE}`);
+                    itemErr.push(`${parseLoad.currency} ${obj2.levyAmountE} is the expected levyAmountE amount in item ${index1 + 1} and not ${parseLoad.currency} ${obj1.levyAmountE}`);
                 }
                 if (obj1.discountAmount !== null && (obj1.discountAmount > (obj1.quantity * obj1.unitPrice))) {
-                    itemErr.push(`Discount ¢${obj1.discountAmount} cannot exceed unitprice: ¢${obj1.quantity * obj1.unitPrice} in item ${index1 + 1}`);
+                    itemErr.push(`Discount ${parseLoad.currency} ${obj1.discountAmount} cannot exceed unitprice: ${parseLoad.currency} ${obj1.quantity * obj1.unitPrice} in item ${index1 + 1}`);
                 }
             });
         }
