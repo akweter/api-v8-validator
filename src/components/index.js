@@ -115,16 +115,16 @@ function PayloadValidator() {
                 }
                 return {
                     ...item,
-                    levyAmountA: levyAmountA.toFixed(5),
-                    levyAmountB: levyAmountB.toFixed(5),
-                    levyAmountC: levyAmountC.toFixed(5),
+                    levyAmountA: levyAmountA.toFixed(4),
+                    levyAmountB: levyAmountB.toFixed(4),
+                    levyAmountC: levyAmountC.toFixed(4),
                     levyAmountD: levyAmountD,
                     levyAmountE: levyAmountE,
                     totalLevy: totalLevy,
                     totalVat: totalVat,
-                    discountAmount: discountAmount.toFixed(5),
+                    discountAmount: discountAmount.toFixed(4),
                     // discountAmountHead: (quantity * discountAmount),
-                    totalAmount: (quantity * unitPrice).toFixed(5),
+                    totalAmount: (quantity * unitPrice).toFixed(4),
                 };
             });
             setItemLists((list) => ({
@@ -177,16 +177,16 @@ function PayloadValidator() {
                 }
                 return {
                     ...item,
-                    levyAmountA: levyAmountA.toFixed(5),
-                    levyAmountB: levyAmountB.toFixed(5),
-                    levyAmountC: levyAmountC.toFixed(5),
+                    levyAmountA: levyAmountA.toFixed(4),
+                    levyAmountB: levyAmountB.toFixed(4),
+                    levyAmountC: levyAmountC.toFixed(4),
                     levyAmountD: levyAmountD,
                     levyAmountE: levyAmountE,
                     totalLevy: totalLevy,
                     totalVat: totalVat,
-                    discountAmount: discountAmount.toFixed(5),
+                    discountAmount: discountAmount.toFixed(4),
                     // discountAmountHead: (quantity * discountAmount),
-                    totalAmount: (quantity * unitPrice).toFixed(5),
+                    totalAmount: (quantity * unitPrice).toFixed(4),
                 };
             });
             setItemLists((list) => ({
