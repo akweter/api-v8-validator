@@ -64,9 +64,9 @@ const ValidateHeaderFields = (payload) =>{
                 errors.push(`Total Levy should be numeric`);
             }
             // Username
-            if (vldtUserName(userName) === false) {
-                errors.push(`Username should not have symbols or whitespace`);
-            }
+            // if (vldtUserName(userName) === false) {
+            //     errors.push(`Username should not have symbols or whitespace`);
+            // }
             // flag
             if (vldtFlag(flag) === false) {
                 errors.push('Flag should be either INVOICE, REFUND, REFUND_CANCELATION, PURCHASE, PURCHASE_CANCELATION');

@@ -4,7 +4,7 @@ import { Button, Grid, Typography } from '@mui/material';
 import ValidateHeaderFields from './validateHeaderFields';
 import ValidateItems from './validateItems';
 
-/* eslint-disable */
+// /* eslint-disable */
 
 function PayloadValidator() {
     const [payload, setPayload] = useState({ originalLoad: [], parseLoad: [] }); // Basket that store user pasted payload
@@ -115,16 +115,16 @@ function PayloadValidator() {
                 }
                 return {
                     ...item,
-                    levyAmountA: twoDP(levyAmountA),
-                    levyAmountB: twoDP(levyAmountB),
-                    levyAmountC: twoDP(levyAmountC),
-                    levyAmountD: twoDP(levyAmountD),
-                    levyAmountE: twoDP(levyAmountE),
-                    totalLevy: twoDP(totalLevy),
-                    totalVat: twoDP(totalVat),
-                    discountAmount: twoDP(discountAmount),
-                    // discountAmountHead: twoDP(quantity * discountAmount),
-                    totalAmount: twoDP(quantity * unitPrice),
+                    levyAmountA: levyAmountA.toFixed(5),
+                    levyAmountB: levyAmountB.toFixed(5),
+                    levyAmountC: levyAmountC.toFixed(5),
+                    levyAmountD: levyAmountD,
+                    levyAmountE: levyAmountE,
+                    totalLevy: totalLevy,
+                    totalVat: totalVat,
+                    discountAmount: discountAmount.toFixed(5),
+                    // discountAmountHead: (quantity * discountAmount),
+                    totalAmount: (quantity * unitPrice).toFixed(5),
                 };
             });
             setItemLists((list) => ({
@@ -177,16 +177,16 @@ function PayloadValidator() {
                 }
                 return {
                     ...item,
-                    levyAmountA: twoDP(levyAmountA),
-                    levyAmountB: twoDP(levyAmountB),
-                    levyAmountC: twoDP(levyAmountC),
-                    levyAmountD: twoDP(levyAmountD),
-                    levyAmountE: twoDP(levyAmountE),
-                    totalLevy: twoDP(totalLevy),
-                    totalVat: twoDP(totalVat),
-                    discountAmount: twoDP(discountAmount),
-                    // discountAmountHead: twoDP(quantity * discountAmount),
-                    totalAmount: twoDP(quantity * unitPrice),
+                    levyAmountA: levyAmountA.toFixed(5),
+                    levyAmountB: levyAmountB.toFixed(5),
+                    levyAmountC: levyAmountC.toFixed(5),
+                    levyAmountD: levyAmountD,
+                    levyAmountE: levyAmountE,
+                    totalLevy: totalLevy,
+                    totalVat: totalVat,
+                    discountAmount: discountAmount.toFixed(5),
+                    // discountAmountHead: (quantity * discountAmount),
+                    totalAmount: (quantity * unitPrice).toFixed(5),
                 };
             });
             setItemLists((list) => ({
@@ -234,16 +234,16 @@ function PayloadValidator() {
     
         setHeader((header) => ({
             ...header,
-            totalLevy: totalLevy.toFixed(2),
-            totalVat: totalVat.toFixed(2),
-            totalAmount: totalAmount.toFixed(2),
-            voucherAmount: voucherAmount.toFixed(2),
-            discountAmount: (discountAmount).toFixed(2),
+            totalLevy: totalLevy.toFixed(4),
+            totalVat: totalVat.toFixed(4),
+            totalAmount: totalAmount.toFixed(4),
+            voucherAmount: voucherAmount.toFixed(4),
+            discountAmount: (discountAmount).toFixed(4),
         }));
     };
 
     // Compare values
-    function compareValues(arr1, arr2) {
+    function compareValues(userPayload, ourPayload) {
         const itemErr = [];
 
         const { parseLoad } = payload;
@@ -262,9 +262,9 @@ function PayloadValidator() {
             itemErr.push(`${discountAmount} is the expected total discount amount instead of ${parseLoad.discountAmount}`);
         }
 
-        if (arr1 && arr1.length > 0) {
-            arr1.forEach((obj1, index1) => {
-                const obj2 = arr2.find(item => item.itemCode === obj1.itemCode);
+        if (userPayload && userPayload.length > 0) {
+            userPayload.forEach((obj1, index1) => {
+                const obj2 = ourPayload.find(item => item.itemCode === obj1.itemCode);
                 if (!obj2) {
                     // itemErr.push(`Object with itemCode ${obj1.itemCode} in the first array doesn't exist in the second array.`);
                     return;
