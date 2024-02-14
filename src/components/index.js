@@ -51,7 +51,7 @@ function PayloadValidator() {
         let itemSubtotal;
 
         if (discountType === "GENERAL") {
-            itemSubtotal = quantity * (unitPrice  - discountAmount);
+            itemSubtotal = (quantity * unitPrice)  - discountAmount;
             return itemSubtotal;
         } else if (discountType === "SELECTIVE"){
             itemSubtotal = (quantity * unitPrice);
