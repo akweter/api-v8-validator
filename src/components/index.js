@@ -249,16 +249,16 @@ function PayloadValidator() {
         const { parseLoad } = payload;
         const { totalAmount, totalLevy, totalVat, discountAmount } = header;
 
-        if (totalAmount !== null && Math.abs(totalAmount - parseLoad.totalAmount) > 0.0001) {
+        if ((totalAmount !== null || totalAmount !== undefined || totalAmount !== 0 || totalAmount !== "") && Math.abs(totalAmount - parseLoad.totalAmount) > 0.0001) {
             itemErr.push(`${parseLoad.currency}: ${totalAmount} is the expected total amount instead of ${parseLoad.currency}: ${parseLoad.totalAmount}`);
         }
-        if (totalLevy !== null && Math.abs(totalLevy - parseLoad.totalLevy) > 0.0001) {
+        if ((totalLevy !== null || totalLevy !== undefined || totalLevy !== 0 || totalLevy !== "") && Math.abs(totalLevy - parseLoad.totalLevy) > 0.0001) {
             itemErr.push(`${parseLoad.currency}: ${totalLevy} is the expected total levy amount instead of ${parseLoad.currency}: ${parseLoad.totalLevy}`);
         }
-        if (totalVat !== null && Math.abs(totalVat - parseLoad.totalVat) > 0.0001) {
+        if ((totalVat !== null || totalVat !== undefined || totalVat !== 0 || totalVat !== "") && Math.abs(totalVat - parseLoad.totalVat) > 0.0001) {
             itemErr.push(`${parseLoad.currency}: ${totalVat} is the expected total VAT instead of ${parseLoad.currency}: ${parseLoad.totalVat}`);
         }
-        if (discountAmount !== null && Math.abs(discountAmount - parseLoad.discountAmount) > 0.0001) {
+        if ((discountAmount !== null || discountAmount !== undefined || discountAmount !== 0 || discountAmount !== "") && Math.abs(discountAmount - parseLoad.discountAmount) > 0.0001) {
             itemErr.push(`${parseLoad.currency}: ${discountAmount} is the expected total discount amount instead of ${parseLoad.currency}: ${parseLoad.discountAmount}`);
         }
 
@@ -266,26 +266,26 @@ function PayloadValidator() {
             userPayload.forEach((obj1, index1) => {
                 const obj2 = ourPayload.find(item => item.itemCode === obj1.itemCode);
                 if (!obj2) {
-                    // itemErr.push(`Object with itemCode ${obj1.itemCode} in the first array doesn't exist in the second array.`);
+                    // itemErr.push(`Object with itemCode ${obj1.itemCode} in the first item doesn't exist in the second item.`);
                     return;
                 }
                 // Compare items specific fields for correct LEVY values
-                if (obj2.levyAmountA !== null && Math.abs(obj1.levyAmountA - obj2.levyAmountA) > 0.0001) {
+                if ((obj2.levyAmountA !== null || obj2.levyAmountA !== undefined || obj2.levyAmountA !== 0 || obj2.levyAmountA !== "") && Math.abs(obj1.levyAmountA - obj2.levyAmountA) > 0.0001) {
                     itemErr.push(`${parseLoad.currency}: ${obj2.levyAmountA} is the expected levyAmountA amount in item ${index1 + 1} and not ${parseLoad.currency}: ${obj1.levyAmountA}`);
                 }
-                if (obj2.levyAmountB !== null && Math.abs(obj1.levyAmountB - obj2.levyAmountB) > 0.0001) {
+                if (((obj2.levyAmountB !== null || obj2.levyAmountB !== undefined || obj2.levyAmountB !== 0 || obj2.levyAmountB !== "")) && Math.abs(obj1.levyAmountB - obj2.levyAmountB) > 0.0001) {
                     itemErr.push(`${parseLoad.currency}: ${obj2.levyAmountB} is the expected levyAmountB amount in item ${index1 + 1} and not ${parseLoad.currency}: ${obj1.levyAmountB}`);
                 }
-                if (obj2.levyAmountC !== null && Math.abs(obj1.levyAmountC - obj2.levyAmountC) > 0.0001) {
+                if (((obj2.levyAmountC !== null || obj2.levyAmountC !== undefined || obj2.levyAmountC !== 0 || obj2.levyAmountC !== "")) && Math.abs(obj1.levyAmountC - obj2.levyAmountC) > 0.0001) {
                     itemErr.push(`${parseLoad.currency}: ${obj2.levyAmountC} is the expected levyAmountC amount in item ${index1 + 1} and not ${parseLoad.currency}: ${obj1.levyAmountC}`);
                 }
-                if (obj2.levyAmountD !== null && Math.abs(obj1.levyAmountD - obj2.levyAmountD) > 0.0001) {
+                if ((obj2.levyAmountD !== null || obj2.levyAmountD !== undefined || obj2.levyAmountD !== 0 || obj2.levyAmountD !== "") && Math.abs(obj1.levyAmountD - obj2.levyAmountD) > 0.0001) {
                     itemErr.push(`${parseLoad.currency}: ${obj2.levyAmountD} is the expected levyAmountD amount in item ${index1 + 1} and not ${parseLoad.currency}: ${obj1.levyAmountD}`);
                 }
-                if (obj2.levyAmountE !== null && Math.abs(obj1.levyAmountE - obj2.levyAmountE) > 0.0001) {
+                if ((obj2.levyAmountE !== null || obj2.levyAmountE !== undefined || obj2.levyAmountE !== 0 || obj2.levyAmountE !== "") && Math.abs(obj1.levyAmountE - obj2.levyAmountE) > 0.0001) {
                     itemErr.push(`${parseLoad.currency}: ${obj2.levyAmountE} is the expected levyAmountE amount in item ${index1 + 1} and not ${parseLoad.currency}: ${obj1.levyAmountE}`);
                 }
-                if (obj1.discountAmount !== null && (obj1.discountAmount > (obj1.quantity * obj1.unitPrice))) {
+                if ((obj2.discountAmount !== null || obj2.discountAmount !== undefined || obj2.discountAmount !== 0 || obj2.discountAmount !== "") && (obj1.discountAmount > (obj1.quantity * obj1.unitPrice))) {
                     itemErr.push(`Discount ${parseLoad.currency}: ${obj1.discountAmount} cannot exceed unitprice: ${parseLoad.currency}: ${obj1.quantity * obj1.unitPrice} in item ${index1 + 1}`);
                 }
             });
