@@ -18,8 +18,7 @@ function PayloadValidator() {
         discountAmount: "",
     }); // Basket that stores the payload header values
     const [errors, setErrors] = useState([]); // Basket that stores the errors
-    const [load, setLoad] = useState(false);
-    const [validationMessage, setValidationMessage] = useState('');
+    const [validationMessage, setValidationMessage] = useState(''); // Nasket for success remove // Will be remove on next updates
 
     // Check the user payload if it is valid and push the data into parseLoad basket
     useEffect(() => {
@@ -40,7 +39,6 @@ function PayloadValidator() {
         if (payload.parseLoad.items && itemlists.items) {
             performComputations(itemlists, payload.parseLoad);
             compareValues(payload.parseLoad.items, itemlists.items);
-            setLoad(false);
         }
     }, [itemlists.items, payload.parseLoad]);
     
@@ -324,7 +322,6 @@ function PayloadValidator() {
             } else {
                 setValidationMessage('');
             }
-            setLoad(false);
         }
         else {
             setErrors([]);
