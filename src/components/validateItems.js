@@ -1,3 +1,8 @@
+
+const isValidNumber = (value) => {
+    return !isNaN(Number(value));
+};
+
 const ValidateItems = (payload) => {
     let errors = [];
 
@@ -63,8 +68,5 @@ const ValidateItems = (payload) => {
         return errors;
     }
 }
-const isValidNumber = (value) => {
-    return !isNaN(Number(value));
-};
 
 export default ValidateItems;

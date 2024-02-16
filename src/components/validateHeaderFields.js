@@ -44,7 +44,7 @@ const ValidateHeaderFields = (payload) =>{
         const paylLoadFields = keyValues.filter(field => !(field in payload));
 
         if (paylLoadFields.length > 0) {
-            errors.push(`Missing filed "${paylLoadFields.join(' ')}" in the header\n`);
+            errors.push(`Missing field (${paylLoadFields.join(', ')}) in the header`);
         }
         else {
             // Currency
