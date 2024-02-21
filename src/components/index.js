@@ -59,16 +59,6 @@ function PayloadValidator() {
         }
     }
 
-    // Round the values to two decimal place
-    function twoDP(value) {
-        if (typeof value === 'number' && !isNaN(value)) {
-          let roundedValue = Math.round(value * 100) / 100;
-          return roundedValue;
-        } else {
-          return value;
-        }
-    }
-
     // perform inclusive VAT computations
     const handleInclusiveTaxes = (items) => {
         if(items){
