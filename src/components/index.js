@@ -4,7 +4,7 @@ import { Button, Grid, Typography } from '@mui/material';
 import ValidateHeaderFields from './validateHeaderFields';
 import ValidateItems from './validateItems';
 
-/* eslint-disable */
+// /* eslint-disable */
 
 const LEVY_RATES = {
     A: 2.5 / 100,
@@ -45,59 +45,257 @@ function PayloadValidator() {
     // Perform automatic computation and compares tax calculations
     useEffect(() => {
         if (payload.parseLoad.items && itemlists.items) {
-            performComputations(itemlists, payload.parseLoad);
+            performComputations(payload.parseLoad);
             compareValues(payload.parseLoad.items, itemlists.items);
         }
     }, [itemlists.items, payload.parseLoad]);
 
     // compute general and selective discount
+    // const handleDiscountSubtotal = (items) => {
+    //     const { discountType } = payload.parseLoad;
+    //     const { quantity, unitPrice, discountAmount } = items;
+    //     return discountType === 'GENERAL' ? quantity * unitPrice - discountAmount : quantity * unitPrice;
+    // };
+
+    // Perform Taxes
+    // const handleTaxes = (items, isExclusive) => {
+    //     if (items) {
+    //         return items.map((item) => {
+    //             const { quantity, unitPrice, itemCategory, discountAmount } = item;
+    //             const itemSubtotal = handleDiscountSubtotal(item);
+    //             const graValue = isExclusive ? itemSubtotal : itemSubtotal / 1.219;
+    //             const levyAmount = itemCategory === 'EXM' ? 0 : Object.values(LEVY_RATES).reduce((total, rate) => total + rate * graValue, 0);
+    //             const totalVat = isExclusive ? 0.15 * (graValue + levyAmount) : 0.15 * (graValue / 1.15 + levyAmount);
+    //             const updatedItem = {
+    //                 ...item,
+    //                 ...Object.fromEntries(Object.entries(LEVY_RATES).map(([key, rate]) => [`levyAmount${key}`, rate * graValue])),
+    //                 totalLevy: levyAmount,
+    //                 totalVat,
+    //                 discountAmount: discountAmount.toFixed(4),
+    //                 totalAmount: (quantity * unitPrice).toFixed(4),
+    //             };
+    //             return updatedItem;
+    //         });
+    //     }
+    //     return [];
+    // };
+
+    // const performComputations = (parseLoad) => {
+    //     const { calculationType } = parseLoad;
+    //     const updatedItems = calculationType === 'INCLUSIVE' ? handleTaxes(parseLoad.items, false) : handleTaxes(parseLoad.items, true);
+    //     const computedValues = updatedItems.reduce((acc, item) => ({
+    //             totalLevy: acc.totalLevy + parseFloat(item.totalLevy || 0),
+    //             totalVat: acc.totalVat + parseFloat(item.totalVat || 0),
+    //             totalAmount: acc.totalAmount + parseFloat(item.totalAmount || 0),
+    //             discountAmount: acc.discountAmount + parseFloat(item.discountAmount || 0),
+    //     }),
+    //         { totalLevy: 0, totalVat: 0, totalAmount: 0 }
+    //     );
+    //     setHeader({
+    //         totalLevy: computedValues.totalLevy.toFixed(4),
+    //         totalVat: computedValues.totalVat.toFixed(4),
+    //         totalAmount: computedValues.totalAmount.toFixed(4),
+    //         discountAmount: computedValues.discountAmount.toFixed(4),
+    //     });
+    //     setItemLists((list) => ({ ...list, items: updatedItems }));
+    // };
+
+    // compute general and selective discount
     const handleDiscountSubtotal = (items) => {
         const { discountType } = payload.parseLoad;
         const { quantity, unitPrice, discountAmount } = items;
-        return discountType === 'GENERAL' ? quantity * unitPrice - discountAmount : quantity * unitPrice;
-    };
+        let itemSubtotal;
 
-    // Perform Taxes
-    const handleTaxes = (items, isExclusive) => {
-        if (items) {
-            return items.map((item) => {
+        if (discountType === "GENERAL") {
+            itemSubtotal = quantity * (unitPrice  - discountAmount);
+            return itemSubtotal;
+        } else if (discountType === "SELECTIVE"){
+            itemSubtotal = (quantity * unitPrice);
+            return itemSubtotal;
+        } else{
+            return itemSubtotal = 0;
+        }
+    }
+
+    // Round the values to two decimal place
+    function twoDP(value) {
+        if (typeof value === 'number' && !isNaN(value)) {
+          let roundedValue = Math.round(value * 100) / 100;
+          return roundedValue;
+        } else {
+          return value;
+        }
+    }
+
+    // perform inclusive VAT computations
+    const handleInclusiveTaxes = (items) => {
+        if(items){
+            const updatedItems = items.map((item) => {
                 const { quantity, unitPrice, itemCategory, discountAmount } = item;
                 const itemSubtotal = handleDiscountSubtotal(item);
-                const graValue = isExclusive ? itemSubtotal : itemSubtotal / 1.219;
-                const levyAmount = itemCategory === 'EXM' ? 0 : Object.values(LEVY_RATES).reduce((total, rate) => total + rate * graValue, 0);
-                const totalVat = isExclusive ? 0.15 * (graValue + levyAmount) : 0.15 * (graValue / 1.15 + levyAmount);
-                const updatedItem = {
+
+                const graValue = itemSubtotal / 1.219;
+                let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalLevy, totalVat, vatableAmt;
+
+                if (itemCategory === "") {
+                    levyAmountA = levyAmountB = (2.5 / 100) * graValue;
+                    levyAmountC = (1 / 100) * graValue;
+                    levyAmountD = levyAmountE = "";
+                    vatableAmt = graValue + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                    totalVat = 0.15 * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                else if(itemCategory === "EXM"){
+                    levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = totalLevy = "";
+                }
+                else if(itemCategory === "TRSM"){
+                    const graValueTRSM = itemSubtotal / 1.229;
+                    
+                    levyAmountA = levyAmountB = (2.5 / 100) * graValueTRSM;
+                    levyAmountC = (1 / 100) * graValueTRSM;
+                    levyAmountD = "";
+                    levyAmountE = (1 / 100) * graValueTRSM;
+                    vatableAmt = graValueTRSM + levyAmountA + levyAmountB + levyAmountC;
+                    totalVat = (15 / 100) * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                else if(itemCategory === "CST"){
+                    const graValueCST = itemSubtotal / 1.2765;
+                    levyAmountA = levyAmountB = (2.5 / 100) * graValueCST;
+                    levyAmountC = (1 / 100) * graValueCST;
+                    levyAmountD = (5 / 100) * graValueCST;
+                    levyAmountE = "";
+                    vatableAmt = graValueCST + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
+                    totalVat = (15 / 100) * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                return {
                     ...item,
-                    ...Object.fromEntries(Object.entries(LEVY_RATES).map(([key, rate]) => [`levyAmount${key}`, rate * graValue])),
-                    totalLevy: levyAmount,
-                    totalVat,
-                    discountAmount: discountAmount.toFixed(4),
-                    totalAmount: (quantity * unitPrice).toFixed(4),
+                    levyAmountA: twoDP(levyAmountA),
+                    levyAmountB: twoDP(levyAmountB),
+                    levyAmountC: twoDP(levyAmountC),
+                    levyAmountD: twoDP(levyAmountD),
+                    levyAmountE: twoDP(levyAmountE),
+                    totalLevy: twoDP(totalLevy),
+                    totalVat: twoDP(totalVat),
+                    discountAmount: twoDP(discountAmount),
+                    // discountAmountHead: twoDP(quantity * discountAmount),
+                    totalAmount: twoDP(quantity * unitPrice),
                 };
-                return updatedItem;
             });
+            setItemLists((list) => ({
+                ...list,
+                items: updatedItems,
+            }));
         }
-        return [];
+        else{
+            return;
+        }
     };
 
-    const performComputations = (itemlists, parseLoad) => {
+    // Perform Exclusive Taxes
+    const handleExclusiveTaxes = (items) => {
+        if(items){
+            const updatedItems = items.map((item) => {
+                const { quantity, unitPrice, itemCategory, discountAmount } = item;
+                const itemSubtotal = handleDiscountSubtotal(item);
+
+                let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalLevy, totalVat, vatableAmt;
+
+                if (itemCategory === "") {
+                    levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
+                    levyAmountC = (1 / 100) * itemSubtotal;
+                    levyAmountD = levyAmountE = "";
+                    vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                    totalVat = 0.15 * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                else if(itemCategory === "EXM"){
+                    levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = totalLevy = "";
+                }
+                else if(itemCategory === "TRSM"){
+                    levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
+                    levyAmountC = (1 / 100) * itemSubtotal;
+                    levyAmountD = "";
+                    levyAmountE = (1 / 100) * itemSubtotal;
+                    vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC;
+                    totalVat = 0.15 * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountE;
+                }
+                else if(itemCategory === "CST"){
+                    levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
+                    levyAmountC = (1 / 100) * itemSubtotal;
+                    levyAmountD = (5 / 100) * itemSubtotal;
+                    levyAmountE = "";
+                    vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
+                    totalVat = (15 / 100) * vatableAmt;
+                    totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                }
+                return {
+                    ...item,
+                    levyAmountA: twoDP(levyAmountA),
+                    levyAmountB: twoDP(levyAmountB),
+                    levyAmountC: twoDP(levyAmountC),
+                    levyAmountD: twoDP(levyAmountD),
+                    levyAmountE: twoDP(levyAmountE),
+                    totalLevy: twoDP(totalLevy),
+                    totalVat: twoDP(totalVat),
+                    discountAmount: twoDP(discountAmount),
+                    // discountAmountHead: twoDP(quantity * discountAmount),
+                    totalAmount: twoDP(quantity * unitPrice),
+                };
+            });
+            setItemLists((list) => ({
+                ...list,
+                items: updatedItems,
+            }));
+        }
+        else{
+            return;
+        }
+    };
+
+    const performComputations = (parseLoad) => {
+        const { items } = itemlists;
+    
         const { calculationType } = parseLoad;
-        const updatedItems = calculationType === 'INCLUSIVE' ? handleTaxes(parseLoad.items, false) : handleTaxes(parseLoad.items, true);
-        const computedValues = updatedItems.reduce((acc, item) => ({
-                totalLevy: acc.totalLevy + parseFloat(item.totalLevy || 0),
-                totalVat: acc.totalVat + parseFloat(item.totalVat || 0),
-                totalAmount: acc.totalAmount + parseFloat(item.totalAmount || 0),
-                discountAmount: acc.discountAmount + parseFloat(item.discountAmount || 0),
-        }),
-            { totalLevy: 0, totalVat: 0, totalAmount: 0 }
-        );
-        setHeader({
-            totalLevy: computedValues.totalLevy.toFixed(4),
-            totalVat: computedValues.totalVat.toFixed(4),
-            totalAmount: computedValues.totalAmount.toFixed(4),
-            discountAmount: computedValues.discountAmount.toFixed(4),
-        });
-        setItemLists((list) => ({ ...list, items: updatedItems }));
+        // // Set Inclusive & Exclusive tax
+        if (calculationType === "INCLUSIVE") {
+            handleInclusiveTaxes(parseLoad.items);
+        } else {
+            handleExclusiveTaxes(parseLoad.items);
+        }
+    
+        // Compute final/total taxes and levies
+        const totalLevy = items.reduce((total, item) =>
+            total +
+            parseFloat(item.levyAmountA || 0) +
+            parseFloat(item.levyAmountB || 0) +
+            parseFloat(item.levyAmountC || 0) +
+            parseFloat(item.levyAmountD || 0) +
+            parseFloat(item.levyAmountE || 0),
+            0);
+    
+        const totalVat = items.reduce(
+            (total, item) => total + parseFloat(item.totalVat || 0), 0);
+    
+        const totalAmount = items.reduce(
+            (total, item) => total + parseFloat(item.totalAmount || 0), 0);
+    
+        const voucherAmount = items.reduce(
+            (total, item) => total + parseFloat(item.voucherAmount || 0), 0);
+    
+        const discountAmount = items.reduce(
+            (total, item) => total + parseFloat(item.discountAmount || 0), 0);
+    
+        setHeader((header) => ({
+            ...header,
+            totalLevy: totalLevy.toFixed(4),
+            totalVat: totalVat.toFixed(4),
+            totalAmount: totalAmount.toFixed(4),
+            voucherAmount: voucherAmount.toFixed(4),
+            discountAmount: (discountAmount).toFixed(4),
+        }));
     };
 
     // Compare values
@@ -174,7 +372,7 @@ function PayloadValidator() {
             setErrors(inErrors);
     
             // Perform various computations
-            performComputations(itemlists, parseLoad);
+            performComputations(parseLoad);
             compareValues(parseLoad.items, items);
     
             if (inErrors.length === 0 && errors.length === 0) {
@@ -208,7 +406,6 @@ function PayloadValidator() {
                     textAlign: 'center',
                     justifyContent: 'center',
                     backgroundColor: '#F5927D',
-                    justifyContent: 'space-between'
                 }}
             >
                 <i>Efficiency at work is the tool that turns effort into accomplishment.</i>
