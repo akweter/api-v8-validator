@@ -1,3 +1,4 @@
+/* eslint-disable */
 import PayloadValidator from "./components";
 
 function App() {

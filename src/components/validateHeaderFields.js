@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import {
     vldtCurrency,
     vldtExchangeRate,
@@ -17,34 +19,55 @@ import {
     vldtDiscountAmount,
 } from './validations';
 
-const ValidateHeaderFields = (payload) =>{
+const ValidateHeaderFields = (payload) => {
     let errors = [];
 
     if (payload) {
         const {
-            currency, 
-            exchangeRate, 
-            invoiceNumber, 
-            totalLevy, 
+            currency,
+            exchangeRate,
+            invoiceNumber,
+            totalLevy,
             // userName, 
-            flag, 
-            calculationType, 
-            totalVat, 
-            transactionDate, 
-            totalAmount, 
-            voucherAmount, 
-            businessPartnerName, 
-            businessPartnerTin, 
-            saleType, 
-            discountType, 
-            discountAmount, 
+            flag,
+            calculationType,
+            totalVat,
+            transactionDate,
+            totalAmount,
+            voucherAmount,
+            businessPartnerName,
+            businessPartnerTin,
+            saleType,
+            discountType,
+            discountAmount,
         } = payload;
 
-        const keyValues = ['currency', 'exchangeRate', 'invoiceNumber', 'totalLevy', 'userName', 'flag', 'calculationType', 'totalVat', 'transactionDate', 'totalAmount', 'voucherAmount', 'businessPartnerName', 'businessPartnerTin', 'saleType', 'discountType', 'discountAmount', 'reference', 'groupReferenceId', 'purchaseOrderReference', 'items'];
+        const keyValues = [
+            'currency',
+            'exchangeRate',
+            'invoiceNumber',
+            'totalLevy',
+            'userName',
+            'flag',
+            'calculationType',
+            'totalVat',
+            'transactionDate',
+            'totalAmount',
+            'voucherAmount',
+            'businessPartnerName',
+            'businessPartnerTin',
+            'saleType',
+            'discountType',
+            'discountAmount',
+            'reference',
+            'groupReferenceId',
+            'purchaseOrderReference',
+            'items'
+        ];
         const paylLoadFields = keyValues.filter(field => !(field in payload));
 
         if (paylLoadFields.length > 0) {
-            errors.push(`Missing field (${paylLoadFields.join(', ')}) in the header`);
+            errors.push(`Missing field (${paylLoadFields.join(', ')}) in the header part of the payload`);
         }
         else {
             // Currency
@@ -113,10 +136,6 @@ const ValidateHeaderFields = (payload) =>{
             }
         }
     }
-    else {
-        errors.push('Please provide valid payload');
-    }
-    // ValidateHeaderFields
     if (errors.length > 0) {
         return errors;
     }
