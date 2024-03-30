@@ -31,16 +31,22 @@ function PayloadValidator() {
 
     // Final validation after user click
     function handleValidation() {
-        const headerErr = ValidateHeaderFields(payload.parseLoad);
-        const itemErr = ValidateItems(payload.parseLoad);
-
-        if (headerErr && itemErr) {
-            const mergedErrs = [...headerErr, ...itemErr];
-            setErrors(mergedErrs);
+        const { parseLoad } = payload
+        if (parseLoad.length < 1) {
+            window.alert('Invalid E-VAT API');
         }
         else {
-            setErrors([]);
-            performComputations(payload.parseLoad, setOurPayload, GetReady);
+            const headerErr = ValidateHeaderFields(payload.parseLoad);
+            const itemErr = ValidateItems(payload.parseLoad);
+
+            if (headerErr && itemErr) {
+                const mergedErrs = [...headerErr, ...itemErr];
+                setErrors(mergedErrs);
+            }
+            else {
+                setErrors([]);
+                performComputations(payload.parseLoad, setOurPayload, GetReady);
+            }
         }
     }
 
@@ -55,7 +61,7 @@ function PayloadValidator() {
           .catch((error) => {
             return null;
           });
-      };    
+    };    
 
     // Return the viewer on the browser
     return (
