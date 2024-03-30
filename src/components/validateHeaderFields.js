@@ -1,4 +1,3 @@
-/* eslint-disable */
 
 import {
     vldtCurrency,
@@ -18,6 +17,8 @@ import {
     vldtDiscountType,
     vldtDiscountAmount,
 } from './validations';
+
+/* eslint-disable */
 
 const isTransactionDateValid = (transactionDate) => {
     const transactionDateTime = new Date(transactionDate);

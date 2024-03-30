@@ -1,4 +1,3 @@
-/* eslint-disable */
 
 import React, { useState, useEffect } from 'react';
 import { Button, Grid, Typography, Box, Snackbar } from '@mui/material';
@@ -6,7 +5,9 @@ import ValidateHeaderFields from './validateHeaderFields';
 import ValidateItems from './validateItems';
 import { performComputations } from './computations/taxes';
 // import { PlaceHolder } from './placeholder';
- 
+
+/* eslint-disable */
+
 function PayloadValidator() {
     const [ready, GetReady] = useState(false);
     const [copied, setCopied] = useState(false);
