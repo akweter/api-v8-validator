@@ -19,6 +19,19 @@ import {
     vldtDiscountAmount,
 } from './validations';
 
+const isTransactionDateValid = (transactionDate) => {
+    const transactionDateTime = new Date(transactionDate);
+    const currentDate = new Date();
+    if (transactionDateTime > currentDate) {
+        return false;
+    }
+    const diffMonths = (currentDate.getFullYear() - transactionDateTime.getFullYear()) * 12 + currentDate.getMonth() - transactionDateTime.getMonth();
+
+    if (diffMonths > 6) {
+        return false;
+    }
+};
+
 const ValidateHeaderFields = (payload) => {
     let errors = [];
 
@@ -106,6 +119,12 @@ const ValidateHeaderFields = (payload) => {
             if (vldtTransactionDate(transactionDate) === false) {
                 errors.push(`Transaction Date format should be (yyyy-mm-dd) or (UTC) Eg. (2023-11-20) or (2023-01-20T08:43:28Z)`);
             }
+            else {
+                if (isTransactionDateValid(transactionDate) === false) {
+                    errors.push(`Transaction date cannot be less than six month from now or greater than today's date`);
+                }
+            }
+
             // Total Amount
             if (vldtTotalAmount(totalAmount) === false) {
                 errors.push(`Total amount should be numeric `);

@@ -4,17 +4,7 @@
 const handleDiscountSubtotal = (items, payload) => {
     const { discountType } = payload;
     const { quantity, unitPrice, discountAmount } = items;
-    let itemSubtotal;
-
-    if (discountType === "GENERAL") {
-        itemSubtotal = quantity * (unitPrice - discountAmount);
-        return itemSubtotal;
-    } else if (discountType === "SELECTIVE") {
-        itemSubtotal = (quantity * unitPrice);
-        return itemSubtotal;
-    } else {
-        return itemSubtotal = 0;
-    }
+    return discountType === "GENERAL" ? quantity * (unitPrice - discountAmount) : quantity * unitPrice;
 }
 
 // perform inclusive VAT computations
@@ -34,7 +24,7 @@ const handleInclusiveTaxes = (items, payload) => {
             } = item;
 
             const graValue = itemSubtotal / 1.219;
-            let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalLevy, totalVat, vatableAmt;
+            let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalVat, vatableAmt;
 
             if (itemCategory === "") {
                 levyAmountA = levyAmountB = (2.5 / 100) * graValue;
@@ -42,21 +32,18 @@ const handleInclusiveTaxes = (items, payload) => {
                 levyAmountD = levyAmountE = "";
                 vatableAmt = graValue + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
                 totalVat = 0.15 * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
             }
             else if (itemCategory === "EXM") {
-                levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = totalLevy = "";
+                levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = "";
             }
             else if (itemCategory === "TRSM") {
                 const graValueTRSM = itemSubtotal / 1.229;
-
                 levyAmountA = levyAmountB = (2.5 / 100) * graValueTRSM;
                 levyAmountC = (1 / 100) * graValueTRSM;
                 levyAmountD = "";
                 levyAmountE = (1 / 100) * graValueTRSM;
                 vatableAmt = graValueTRSM + levyAmountA + levyAmountB + levyAmountC;
                 totalVat = (15 / 100) * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
             }
             else if (itemCategory === "CST") {
                 const graValueCST = itemSubtotal / 1.2765;
@@ -66,7 +53,6 @@ const handleInclusiveTaxes = (items, payload) => {
                 levyAmountE = "";
                 vatableAmt = graValueCST + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
                 totalVat = (15 / 100) * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
             }
             return {
                 ...item,
@@ -80,11 +66,10 @@ const handleInclusiveTaxes = (items, payload) => {
                 levyAmountC: levyAmountC,
                 levyAmountD: levyAmountD,
                 levyAmountE: levyAmountE,
-                totalLevy: totalLevy,
-                totalVat: totalVat,
+                vatValue: totalVat,
+                unitPrice,
                 discountAmount: discountAmount,
                 batchCode,
-                totalAmount: quantity * unitPrice,
             };
         });
         return updatedItems;
@@ -107,7 +92,7 @@ const handleExclusiveTaxes = (items, payload) => {
                 discountAmount,
             } = item;
 
-            let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalLevy, totalVat, vatableAmt;
+            let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalVat, vatableAmt;
 
             if (itemCategory === "") {
                 levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
@@ -115,10 +100,9 @@ const handleExclusiveTaxes = (items, payload) => {
                 levyAmountD = levyAmountE = "";
                 vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
                 totalVat = 0.15 * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
             }
             else if (itemCategory === "EXM") {
-                levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = totalLevy = "";
+                levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = "";
             }
             else if (itemCategory === "TRSM") {
                 levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
@@ -127,7 +111,6 @@ const handleExclusiveTaxes = (items, payload) => {
                 levyAmountE = (1 / 100) * itemSubtotal;
                 vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC;
                 totalVat = 0.15 * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountE;
             }
             else if (itemCategory === "CST") {
                 levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
@@ -135,8 +118,7 @@ const handleExclusiveTaxes = (items, payload) => {
                 levyAmountD = (5 / 100) * itemSubtotal;
                 levyAmountE = "";
                 vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
-                totalVat = (15 / 100) * vatableAmt;
-                totalLevy = levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                totalVat = 0.15 * vatableAmt;
             }
             return {
                 ...item,
@@ -150,11 +132,10 @@ const handleExclusiveTaxes = (items, payload) => {
                 levyAmountC: levyAmountC,
                 levyAmountD: levyAmountD,
                 levyAmountE: levyAmountE,
-                totalLevy: totalLevy,
-                totalVat: totalVat,
+                vatValue: totalVat,
+                unitPrice,
                 discountAmount: discountAmount,
                 batchCode,
-                totalAmount: quantity * unitPrice,
             };
         });
         return updatedItems;
@@ -194,10 +175,13 @@ export const performComputations = (payload, setOurPayload, GetReady) => {
         0);
 
     const totalVat = Data.reduce(
-        (total, item) => total + parseFloat(item.totalVat || 0), 0);
+        (total, item) => total + parseFloat(item.vatValue || 0), 0);
 
-    const totalAmount = Data.reduce(
-        (total, item) => total + parseFloat(item.totalAmount || 0), 0);
+    const totalAmount = Data.reduce((total, item) => 
+        total + 
+        parseFloat(item.quantity || 0) * 
+        parseFloat(item.unitPrice || 0),
+        0);
 
     const voucherAmount = Data.reduce(
         (total, item) => total + parseFloat(item.voucherAmount || 0), 0);

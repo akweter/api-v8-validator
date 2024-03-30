@@ -32,15 +32,22 @@ function PayloadValidator() {
     // Final validation after user click
     function handleValidation() {
         const { parseLoad } = payload
-        if (parseLoad.length < 1) {
+        if (!parseLoad || parseLoad.length < 1) {
+            setOurPayload([]);
+            GetReady(false);
             window.alert('Invalid E-VAT API');
         }
         else {
             const headerErr = ValidateHeaderFields(payload.parseLoad);
             const itemErr = ValidateItems(payload.parseLoad);
-
-            if (headerErr && itemErr) {
-                const mergedErrs = [...headerErr, ...itemErr];
+            if (headerErr || itemErr) {
+                let mergedErrs = [];
+                if (headerErr) {
+                    mergedErrs = [...mergedErrs, ...headerErr];
+                }
+                if (itemErr) {
+                    mergedErrs = [...mergedErrs, ...itemErr];
+                }
                 setErrors(mergedErrs);
             }
             else {
@@ -50,6 +57,7 @@ function PayloadValidator() {
         }
     }
 
+    // Copy Formatted payload to Clipboard
     const copyToClipboard = () => {
         navigator.clipboard.writeText(JSON.stringify(ourPayload, null, 2))
           .then(() => {
@@ -59,6 +67,7 @@ function PayloadValidator() {
             }, 3000);
           })
           .catch((error) => {
+            alert('Falied to copy!');
             return null;
           });
     };    
@@ -68,7 +77,7 @@ function PayloadValidator() {
         <div id='maniBody'>
 
             <div id='headerQuote'>
-                <i>Efficiency at work is the tool that turns effort into accomplishment.</i>
+                <i><strong>FOR INVOICE | REFUND | PURCHASE</strong></i>
             </div>
 
             <Typography color='#1B50CB' align='center' p={1} fontSize={30} >
@@ -76,7 +85,7 @@ function PayloadValidator() {
             </Typography>
 
             <div id='subBody1'>
-                <Grid container spacing={2} sx={{ background: '#FDF3FF ', cursor: 'cell' }}>
+                <Grid container spacing={2} sx={{ background: '#FDF3FF ', cursor: 'text', paddingBottom: 1 }} justifyContent='revert'>
                     <Grid item xs={12} md={6}>
                         {ready && errors.length < 1 ? (
                             <Box>
@@ -106,6 +115,7 @@ function PayloadValidator() {
                                             color='primary' 
                                             size='small'
                                             onClick={copyToClipboard}
+                                            title='Copy'
                                         >
                                             Copy
                                         </Button>
@@ -143,11 +153,11 @@ function PayloadValidator() {
                             ))
                         ) : null}
                     </Grid>
-                    <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
+                    <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }} pt={0}>
                         <textarea
                             type='text'
                             rows='35'
-                            style={{ width: '100%' }}
+                            style={{ width: '98%' }}
                             onChange={(e) =>
                                 setPayload((oldState) => ({
                                     ...oldState,
