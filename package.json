@@ -5,7 +5,7 @@
   "author": {
     "name": "GRA E-VAT Tech Support Team",
     "email": "support3@gra.evat.com",
-    "url": "https://gra-payload-validator.netlify.app/"
+    "url": "https://gra-api-validator.vercel.app"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
