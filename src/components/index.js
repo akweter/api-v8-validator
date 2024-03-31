@@ -4,6 +4,7 @@ import { Button, Grid, Typography, Box, Snackbar } from '@mui/material';
 import ValidateHeaderFields from './validateHeaderFields';
 import ValidateItems from './validateItems';
 import { performComputations } from './computations/taxes';
+import DateTimeSecondsDisplay from './utilities/time';
 // import { PlaceHolder } from './placeholder';
 
 /* eslint-disable */
@@ -29,10 +30,9 @@ function PayloadValidator() {
         }
     }, [payload.originalLoad]);
 
-
     // Final validation after user click
     function handleValidation() {
-        const { parseLoad } = payload
+        const { parseLoad } = payload;
         if (!parseLoad || parseLoad.length < 1) {
             setOurPayload([]);
             GetReady(false);
@@ -198,6 +198,8 @@ function PayloadValidator() {
                     </Grid>
                 </Grid>
             </div>
+            
+            <i style={{textAlign: 'center'}}><strong>{DateTimeSecondsDisplay()}</strong></i>
         </div>
     );
 }
