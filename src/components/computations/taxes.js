@@ -189,6 +189,12 @@ export const performComputations = (payload, setOurPayload, GetReady) => {
     const discountAmount = Data.reduce(
         (total, item) => total + parseFloat(item.discountAmount || 0), 0);
 
+    // Remove vat value from each item line
+    const itemsList = Data.map(item => {
+        const { vatValue, ...itemWithoutVat } = item;
+        return itemWithoutVat;
+    });
+
     setOurPayload((state) => ({
         ...state,
         currency,
@@ -210,7 +216,7 @@ export const performComputations = (payload, setOurPayload, GetReady) => {
         reference,
         groupReferenceId,
         purchaseOrderReference,
-        items: Data
+        items: itemsList,
     }));
     GetReady(true);
 };

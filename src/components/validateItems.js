@@ -7,6 +7,7 @@ const isValidNumber = (value) => {
 const ValidateItems = (payload) => {
     let errors = [];
     const itemCodes = new Set();
+    const descriptions = new Set();
 
     const keyValues = [
         "itemCode",
@@ -42,6 +43,11 @@ const ValidateItems = (payload) => {
                     errors.push(`Whitespaces in the Item code (${item.itemCode}) in item line ${index + 1} is not allowed`);
                 }
                 return itemCodes.add(item.itemCode);
+            }
+            if (descriptions.has(item.description)) {
+                errors.push(`Description (${item.description}) is duplicated in item line ${index + 1}`);
+            } else {
+                return descriptions.add(item.description);
             }
             if (!item.unitPrice) {
                 errors.push(`Empty unit price is not allowed in item ${index + 1}`);
