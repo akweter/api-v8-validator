@@ -70,7 +70,7 @@ export function vldtBusinessPartnerName(businessPartnerName) {
 }
 
 export function vldtBusinessPartnerTin(businessPartnerTin) {
-  const regex = /^C[0-9xX]{10}(?:[0-9xX]{4})?$/;
+  const regex = /^(?:C000|GHA-|P000)[0-9xX]{7}(?:[0-9xX]{4})?$/;
   return regex.test(businessPartnerTin);
 }
 
@@ -88,3 +88,4 @@ export function vldtDiscountAmount(discountAmount) {
   const regex = /^\d+(\.\d+)?$/;
   return regex.test(discountAmount);
 }
+  // const regex = /^C[0-9xX]{10}(?:[0-9xX]{4})?$/;

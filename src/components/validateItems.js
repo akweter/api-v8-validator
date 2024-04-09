@@ -44,6 +44,12 @@ const ValidateItems = (payload) => {
                 }
                 return itemCodes.add(item.itemCode);
             }
+            if (/\s/.test(item.itemCategory)) {
+                errors.push(`Whitespaces in the Item itemCategory (${item.itemCategory}) in item line ${index + 1} are not allowed`);
+            }
+            if (!isNaN(item.itemCategory)) {
+                errors.push(`Item itemCategory (${item.itemCategory}) should not be numeric in item line ${index + 1}`);
+            }
             if (descriptions.has(item.description)) {
                 errors.push(`Description (${item.description}) is duplicated in item line ${index + 1}`);
             } else {

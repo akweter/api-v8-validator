@@ -106,7 +106,7 @@ const ValidateHeaderFields = (payload) => {
             // }
             // flag
             if (vldtFlag(flag) === false) {
-                errors.push('Flag should be either INVOICE, REFUND, REFUND_CANCELATION, PURCHASE, PURCHASE_CANCELATION');
+                errors.push('Flag should be either INVOICE, REFUND or PURCHASE');
             }
             // Calculation Type
             if (vldtCalculationType(calculationType) === false) {
@@ -140,7 +140,7 @@ const ValidateHeaderFields = (payload) => {
             }
             // Business Partner Tin
             if (vldtBusinessPartnerTin(businessPartnerTin) === false) {
-                errors.push(`Business Partner Tin should only be 11 or 15 character long without space`);
+                errors.push(`Invalid Business Partner Tin. Confirm the TIN (${businessPartnerTin}) using the TIN VALIDATOR in the API`);
             }
             // Sales Type
             if (vldtSaleType(saleType) === false) {

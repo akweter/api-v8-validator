@@ -35,6 +35,7 @@ function PayloadValidator() {
         const { parseLoad } = payload;
         if (!parseLoad || parseLoad.length < 1) {
             setOurPayload([]);
+            setErrors([]);
             GetReady(false);
             window.alert('Invalid E-VAT API');
         }
