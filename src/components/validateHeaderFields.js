@@ -139,9 +139,9 @@ const ValidateHeaderFields = (payload) => {
                 errors.push(`The pattern for Business Partner Name is incorrect`);
             }
             // Business Partner Tin
-            if (vldtBusinessPartnerTin(businessPartnerTin) === false) {
-                errors.push(`Invalid Business Partner Tin. Confirm the TIN (${businessPartnerTin}) using the TIN VALIDATOR in the API`);
-            }
+            // if (vldtBusinessPartnerTin(businessPartnerTin) === false) {
+            //     errors.push(`Invalid Business Partner Tin. Confirm the TIN (${businessPartnerTin}) using the TIN VALIDATOR in the API`);
+            // }
             // Sales Type
             if (vldtSaleType(saleType) === false) {
                 errors.push(`Allowed Sale Type values are NORMAL, EXPORT, EXEMPTED`);
