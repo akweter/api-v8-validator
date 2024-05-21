@@ -4,7 +4,7 @@
 const handleDiscountSubtotal = (items, payload) => {
     const { discountType } = payload;
     const { quantity, unitPrice, discountAmount } = items;
-    return discountType === "GENERAL" ? (quantity * unitPrice) - discountAmount : quantity * unitPrice;
+    return discountType === "GENERAL" ? quantity * unitPrice - discountAmount : quantity * unitPrice;
 }
 
 // perform inclusive VAT computations
