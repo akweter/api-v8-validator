@@ -94,14 +94,7 @@ const handleExclusiveTaxes = (items, payload) => {
 
             let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalVat, vatableAmt;
 
-            if (itemCategory === "") {
-                levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
-                levyAmountC = (1 / 100) * itemSubtotal;
-                levyAmountD = levyAmountE = "";
-                vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
-                totalVat = 0.15 * vatableAmt;
-            }
-            else if (itemCategory === "EXM") {
+            if (itemCategory === "EXM") {
                 levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = "";
             }
             else if (itemCategory === "TRSM") {
@@ -118,6 +111,13 @@ const handleExclusiveTaxes = (items, payload) => {
                 levyAmountD = (5 / 100) * itemSubtotal;
                 levyAmountE = "";
                 vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
+                totalVat = 0.15 * vatableAmt;
+            }
+            else {
+                levyAmountA = levyAmountB = (2.5 / 100) * itemSubtotal;
+                levyAmountC = (1 / 100) * itemSubtotal;
+                levyAmountD = levyAmountE = "";
+                vatableAmt = itemSubtotal + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
                 totalVat = 0.15 * vatableAmt;
             }
             return {
