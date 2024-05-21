@@ -26,14 +26,7 @@ const handleInclusiveTaxes = (items, payload) => {
             const graValue = itemSubtotal / 1.219;
             let levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalVat, vatableAmt;
 
-            if (itemCategory === "") {
-                levyAmountA = levyAmountB = (2.5 / 100) * graValue;
-                levyAmountC = (1 / 100) * graValue;
-                levyAmountD = levyAmountE = "";
-                vatableAmt = graValue + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
-                totalVat = 0.15 * vatableAmt;
-            }
-            else if (itemCategory === "EXM") {
+            if (itemCategory === "EXM") {
                 levyAmountA = levyAmountB = levyAmountC = levyAmountD = levyAmountE = totalVat = "";
             }
             else if (itemCategory === "TRSM") {
@@ -53,6 +46,13 @@ const handleInclusiveTaxes = (items, payload) => {
                 levyAmountE = "";
                 vatableAmt = graValueCST + levyAmountA + levyAmountB + levyAmountC + levyAmountD;
                 totalVat = (15 / 100) * vatableAmt;
+            }
+            else {
+                levyAmountA = levyAmountB = (2.5 / 100) * graValue;
+                levyAmountC = (1 / 100) * graValue;
+                levyAmountD = levyAmountE = "";
+                vatableAmt = graValue + levyAmountA + levyAmountB + levyAmountC + levyAmountD + levyAmountE;
+                totalVat = 0.15 * vatableAmt;
             }
             return {
                 ...item,
