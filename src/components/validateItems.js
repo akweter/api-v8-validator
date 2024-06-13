@@ -39,9 +39,9 @@ const ValidateItems = (payload) => {
                 if (!item.itemCode) {
                     errors.push(`Item code cannot be empty in item ${index + 1}`);
                 }
-                if (/\s/.test(item.itemCode)) {
-                    errors.push(`Whitespaces in the Item code (${item.itemCode}) in item line ${index + 1} is not allowed`);
-                }
+                // if (/\s/.test(item.itemCode)) {
+                //     errors.push(`Whitespaces in the Item code (${item.itemCode}) in item line ${index + 1} is not allowed`);
+                // }
                 return itemCodes.add(item.itemCode);
             }
             if (/\s/.test(item.itemCategory)) {
