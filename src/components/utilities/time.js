@@ -48,7 +48,7 @@ function DateTimeSecondsDisplay() {
 
     return (
         <div>
-            <Chip label={formattedDateTime} color="success" variant="filled" size='medium' />
+            <Chip label={formattedDateTime} color="warning" variant="filled" size='medium' />
         </div>
     );
 };
