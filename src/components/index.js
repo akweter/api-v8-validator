@@ -166,7 +166,7 @@ function PayloadValidator() {
                                     originalLoad: e.target.value,
                                 }))
                             }
-                            placeholder={'Paste GRA E-VAT Payload Here'}
+                            placeholder={'Format GRA eVAT Payload and paste it here'}
                         />
                         <br />
                         <Button
