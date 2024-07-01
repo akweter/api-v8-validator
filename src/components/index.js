@@ -134,7 +134,7 @@ function PayloadValidator() {
                             </Box>
                         ) : null }
                         
-                        {errors.length > 0 ? (
+                        {errors ? (
                             errors.map((error, index) => (
                                 <table key={index}>
                                     <thead>
