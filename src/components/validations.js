@@ -35,7 +35,7 @@ export function vldtUserName(userName) {
 }
 
 export function vldtFlag(flag) {
-  const regex = /^(INVOICE|REFUND|REFUND_CANCELATION|PURCHASE|PURCHASE_CANCELATION)$/;
+  const regex = /^(INVOICE|REFUND|REFUND_CANCELATION|PURCHASE|PURCHASE_CANCELATION|PARTIAL_REFUND)$/;
   return regex.test(flag);
 }
 
