@@ -79,7 +79,7 @@ function PayloadValidator() {
         <div id='maniBody'>
 
             <div id='headerQuote'>
-                <i><strong>FOR INVOICE | REFUND | PURCHASE</strong></i>
+                <i><strong>Validate INVOICE | REFUND | PURCHASE | REFUND_CANCELATION | PURCHASE_CANCELATION | PARTIAL_REFUND</strong></i>
             </div>
 
             <Typography color='#1B50CB' align='center' p={1} fontSize={30} >
