@@ -55,7 +55,7 @@ const handleInclusiveTaxes = (items, payload) => {
                 totalVat = 0.15 * vatableAmt;
             }
             return {
-                ...item,
+                // ...item,
                 itemCode,
                 itemCategory,
                 expireDate,
@@ -121,7 +121,7 @@ const handleExclusiveTaxes = (items, payload) => {
                 totalVat = 0.15 * vatableAmt;
             }
             return {
-                ...item,
+                // ...item,
                 itemCode,
                 itemCategory,
                 expireDate,
