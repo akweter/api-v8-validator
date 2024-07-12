@@ -12,7 +12,7 @@ const ValidateItems = (payload) => {
     const keyValues = [
         "itemCode",
         "itemCategory",
-        "expireDate",
+        // "expireDate",
         "description",
         "quantity",
         "levyAmountA",
@@ -21,7 +21,7 @@ const ValidateItems = (payload) => {
         "levyAmountD",
         "levyAmountE",
         "discountAmount",
-        "batchCode",
+        // "batchCode",
         "unitPrice"
     ];
 

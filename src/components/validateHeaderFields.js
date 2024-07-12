@@ -67,15 +67,15 @@ const ValidateHeaderFields = (payload) => {
             'totalVat',
             'transactionDate',
             'totalAmount',
-            'voucherAmount',
+            // 'voucherAmount',
             'businessPartnerName',
             'businessPartnerTin',
             'saleType',
             'discountType',
             'discountAmount',
             'reference',
-            'groupReferenceId',
-            'purchaseOrderReference',
+            // 'groupReferenceId',
+            // 'purchaseOrderReference',
             'items'
         ];
         const paylLoadFields = keyValues.filter(field => !(field in payload));
