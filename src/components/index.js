@@ -111,7 +111,7 @@ function PayloadValidator() {
                                             Your payload is formatted
                                         </Typography>
                                     </Grid>
-                                    <Grid item sx={8} sm={6}>
+                                    <Grid item sx={4} sm={3}>
                                         <Button 
                                             variant='outlined' 
                                             color='primary' 
@@ -120,6 +120,17 @@ function PayloadValidator() {
                                             title='Copy'
                                         >
                                             Copy
+                                        </Button>
+                                    </Grid>
+                                    <Grid item sx={4} sm={3}>
+                                        <Button 
+                                            variant='outlined' 
+                                            color='primary' 
+                                            size='small'
+                                            onClick={() => alert("sent to GRA")}
+                                            title='Send Payload to GRA'
+                                        >
+                                            Submit To GRA
                                         </Button>
                                     </Grid>
                                     <Grid item xs={12} sx={{
