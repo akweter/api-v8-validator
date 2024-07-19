@@ -122,7 +122,7 @@ const ValidateHeaderFields = (payload) => {
             }
             else {
                 if (isTransactionDateValid(transactionDate) === false) {
-                    errors.push(`Transaction date cannot be less than six month from now or greater than today's date`);
+                    errors.push(`Transaction date cannot be less than six month from now or aheads today's date`);
                 }
             }
 
