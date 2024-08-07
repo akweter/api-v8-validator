@@ -44,6 +44,8 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.14",
+    "axios": "^1.7.2",
+    "clipboard-polyfill": "^4.1.0",
     "xml2js": "^0.6.2"
   }
 }

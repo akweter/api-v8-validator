@@ -5,9 +5,11 @@ import ValidateHeaderFields from './validateHeaderFields';
 import ValidateItems from './validateItems';
 import { performComputations } from './computations/taxes';
 import DateTimeSecondsDisplay from './utilities/time';
+import { submitPayload } from './submitPayload';
+import { writeText } from 'clipboard-polyfill';
 // import { PlaceHolder } from './placeholder';
 
-/* eslint-disable */
+// /* eslint-disable */
 
 function PayloadValidator() {
     const [ready, GetReady] = useState(false);
@@ -61,7 +63,8 @@ function PayloadValidator() {
 
     // Copy Formatted payload to Clipboard
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(JSON.stringify(ourPayload, null, 2))
+        const payloadText = JSON.stringify(ourPayload, null, 2);
+        writeText(payloadText)
           .then(() => {
             setCopied(true);
             setTimeout(() => {
@@ -113,24 +116,24 @@ function PayloadValidator() {
                                     </Grid>
                                     <Grid item sx={4} sm={3}>
                                         <Button 
-                                            variant='outlined' 
-                                            color='primary' 
+                                            variant='contained' 
+                                            color='inherit' 
                                             size='small'
                                             onClick={copyToClipboard}
                                             title='Copy'
                                         >
-                                            Copy
+                                            Copy Payload
                                         </Button>
                                     </Grid>
                                     <Grid item sx={4} sm={3}>
                                         <Button 
-                                            variant='outlined' 
+                                            variant='contained' 
                                             color='primary' 
                                             size='small'
-                                            onClick={() => alert("sent to GRA")}
+                                            onClick={() => submitPayload(ourPayload)}
                                             title='Send Payload to GRA'
                                         >
-                                            Submit To GRA
+                                            Submit Payload
                                         </Button>
                                     </Grid>
                                     <Grid item xs={12} sx={{
