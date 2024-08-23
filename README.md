@@ -2,7 +2,7 @@
 
 ## Overview
 
-The GRA EVAT API Validator System is a comprehensive solution developed by the dedicated staff of GRA E-VAT Tech Support Team to validate GRA EVAT API VERSION 8.2. This system is built using React.js and deployed on [vercel](https://gra-api-validator.vercel.app) for live viewing and testing.
+The GRA EVAT API Validator System is a comprehensive solution developed by the dedicated staff of GRA E-VAT Tech Support Team to validate GRA EVAT API VERSION 8.2. This system is built using React.js and deployed on [environment](https://gra.payload.jamesakweter.tech) for live viewing and testing.
 
 ## Contributors
 
@@ -22,7 +22,7 @@ The validator system is designed to handle various types of calculation scenario
 
 ## Live View
 
-Visit [vercel](https://gra-api-validator.vercel.app) to experience the GRA EVAT API Validator System in action.
+A [Test Environment](https://gra.payload.jamesakweter.tech) to experience the GRA EVAT API Validator System in action.
 
 ## Future Releases
 

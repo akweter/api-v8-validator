@@ -21,3 +21,10 @@
     flex-direction: column;
     gap: 20px,
 }
+
+.shortener {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px; /* Adjust this width as needed */
+}
