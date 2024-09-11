@@ -84,7 +84,6 @@ const ValidateHeaderFields = (payload) => {
             errors.push(`Missing field (${paylLoadFields.join(', ')}) in the header part of the payload`);
         }
         else {
-            // Currency
             if (vldtCurrency(currency) === false) {
                 errors.push(`Allowed Currencies are: "GHS", "EUR", "GBP", "USD"`);
             }
@@ -97,9 +96,9 @@ const ValidateHeaderFields = (payload) => {
                 errors.push(`Invoice number should be more than 4 characters and no spaces allowed`);
             }
             // Total Levy
-            if (vldtTotalLevy(totalLevy) === false) {
-                errors.push(`Total Levy should be numeric`);
-            }
+            // if (vldtTotalLevy(totalLevy) === false) {
+            //     errors.push(`Total Levy should be numeric`);
+            // }
             // Username
             // if (vldtUserName(userName) === false) {
             //     errors.push(`Username should not have symbols or whitespace`);
@@ -118,7 +117,7 @@ const ValidateHeaderFields = (payload) => {
             }
             // Transaction Date
             if (vldtTransactionDate(transactionDate) === false) {
-                errors.push(`Transaction Date format should be (yyyy-mm-dd) or (UTC) Eg. (2023-11-20) or (2023-01-20T08:43:28Z)`);
+                errors.push(`Transaction Date format should be (yyyy-mm-dd) or (UTC) Eg. (2024-11-20) or (2024-01-20T08:43:28Z)`);
             }
             else {
                 if (isTransactionDateValid(transactionDate) === false) {
@@ -140,11 +139,11 @@ const ValidateHeaderFields = (payload) => {
             }
             // Business Partner Tin
             // if (vldtBusinessPartnerTin(businessPartnerTin) === false) {
-            //     errors.push(`Invalid Business Partner Tin. Confirm the TIN (${businessPartnerTin}) using the TIN VALIDATOR in the API`);
+            //     errors.push(`Invalid Business Partner Tin. Kindly validate the TIN (${businessPartnerTin}) `);
             // }
             // Sales Type
             if (vldtSaleType(saleType) === false) {
-                errors.push(`Allowed Sale Type values are NORMAL, EXPORT, EXEMPTED`);
+                errors.push(`Allowed Sale Type value is NORMAL`);
             }
             // Discount Type
             if (vldtDiscountType(discountType) === false) {

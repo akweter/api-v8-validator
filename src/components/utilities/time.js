@@ -35,8 +35,8 @@ function DateTimeSecondsDisplay() {
             }
         })();
 
-        const formattedDateTimeWithSuffix = formattedDate.replace(/(\d+)(th|st|nd|rd)/, `$1${ daySuffix }`);
-        return formattedDateTimeWithSuffix;
+        const fds = formattedDate.replace(/(\d+)(th|st|nd|rd)/, `$1${ daySuffix }`);
+        return fds;
     };
 
     useEffect(() => {
@@ -47,10 +47,10 @@ function DateTimeSecondsDisplay() {
     }, []);
 
     return (
-        <div>
-            <Chip label={formattedDateTime} color="warning" variant="filled" size='medium' />
-        </div>
+        <>
+            <Chip sx={{ minWidth: 200, padding: 2.5 }} label={formattedDateTime} color="warning" variant="filled" size='medium'/>
+        </>
     );
 };
 
-export default DateTimeSecondsDisplay;
+export default DateTimeSecondsDisplay; 

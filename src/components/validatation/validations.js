@@ -2,7 +2,7 @@
 
 export function vldtCurrency(currency) {
   if (typeof currency === 'string' && currency.length > 2) {
-    const regex = /^(GHS|EUR|GBP|USD)$/;
+    const regex = /^(AED|CAD|CNY|EUR|GBP|GHS|HKD|INR|JPY|LRD|NGN|USD|ZAR)$/;
     return regex.test(currency);
   }
   return false;
@@ -70,12 +70,12 @@ export function vldtBusinessPartnerName(businessPartnerName) {
 }
 
 export function vldtBusinessPartnerTin(businessPartnerTin) {
-  const regex = /^(?:C000|GHA-|P000)[0-9xX]{7}(?:[0-9xX]{4})?$/;
+  const regex = /^(?:C000|GHA-|P000|V000|G000)[0-9xX]{7}(?:[0-9xX]{4})?$/;
   return regex.test(businessPartnerTin);
 }
 
 export function vldtSaleType(saleType) {
-  const regex = /^(NORMAL|EXPORT|EXEMPTED)$/;
+  const regex = /^(NORMAL|RENT)$/;
   return regex.test(saleType);
 }
 
@@ -88,4 +88,3 @@ export function vldtDiscountAmount(discountAmount) {
   const regex = /^\d+(\.\d+)?$/;
   return regex.test(discountAmount);
 }
-  // const regex = /^C[0-9xX]{10}(?:[0-9xX]{4})?$/;

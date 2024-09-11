@@ -39,3 +39,48 @@ export const PlaceHolder = {
         ]
     }
 `}
+
+// GRA header payload structure
+export const payloadStructure = {
+    currency: "GHS",
+    exchangeRate: "1.0",
+    invoiceNumber: "",
+    totalLevy: "",
+    userName: "",
+    flag: "INVOICE",
+    calculationType: "INCLUSIVE",
+    totalVat: "",
+    transactionDate: "",
+    totalAmount: "",
+    voucherAmount: "",
+    businessPartnerName: "",
+    businessPartnerTin: "",
+    saleType: "NORMAL",
+    discountType: "GENERAL",
+    discountAmount: "",
+    reference: "",
+    groupReferenceId: "",
+    purchaseOrderReference: "",
+    items: []
+}
+
+// GRA Item payload structure
+export const itemlistPayload = {
+    itemCode: "",
+    itemCategory: "",
+    expireDate: "",
+    description: "",
+    quantity: "",
+    levyAmountA: "",
+    levyAmountB: "",
+    levyAmountC: "",
+    levyAmountD: "",
+    levyAmountE: "",
+    discountAmount: 0.00,
+    batchCode: "",
+    unitPrice: "",
+    itemSubtotal: "",
+    totalVat: "",
+    totalLevy: "",
+    totalAmount: ""
+}

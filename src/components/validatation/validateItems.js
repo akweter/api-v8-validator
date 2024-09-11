@@ -24,7 +24,7 @@ const ValidateItems = (payload) => {
         // "batchCode",
         "unitPrice"
     ];
-
+    
     if (payload && payload.items) {
         payload.items.forEach((item, index) => {
             const missingFields = keyValues.filter(key => !Object.keys(item).includes(key));
@@ -44,16 +44,14 @@ const ValidateItems = (payload) => {
                 // }
                 return itemCodes.add(item.itemCode);
             }
+            if (descriptions.has(item.description)) {
+                errors.push(`Description (${item.description}) is duplicated in item line ${index + 1}`);
+            }
             if (/\s/.test(item.itemCategory)) {
                 errors.push(`Whitespaces in the Item itemCategory (${item.itemCategory}) in item line ${index + 1} are not allowed`);
             }
             if (!isNaN(item.itemCategory)) {
                 errors.push(`Item itemCategory (${item.itemCategory}) should not be numeric in item line ${index + 1}`);
-            }
-            if (descriptions.has(item.description)) {
-                errors.push(`Description (${item.description}) is duplicated in item line ${index + 1}`);
-            } else {
-                return descriptions.add(item.description);
             }
             if (!item.unitPrice) {
                 errors.push(`Empty unit price is not allowed in item ${index + 1}`);

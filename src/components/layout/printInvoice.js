@@ -46,10 +46,12 @@ const InvoiceTemplate = ({ data }) => {
 				<tr>
 					<td>
 						<big style={{ fontSize: 23 }}>
-							Sample Invoice
+							Company Name <br/>
 						</big>
 						<address>
-							jamesakweter.tech <br />
+							Company TIN <br/>
+							Address/Location < br/>
+							Email/Telephone
 						</address>
 						<h1>{flag}</h1>
 					</td>
@@ -68,7 +70,7 @@ const InvoiceTemplate = ({ data }) => {
 				<tbody>
 					<tr>
 						<td>{businessPartnerName}</td>
-						<td>EXAMPLE COMPANY LIMITED</td>
+						<td>Example Company Limited</td>
 						<td>{num}</td>
 					</tr>
 					<tr>
@@ -78,8 +80,8 @@ const InvoiceTemplate = ({ data }) => {
 					</tr>
 					<tr>
 						<td></td>
-						<td>SERVED BY:</td>
-						<td>{userName}</td>
+						<td><strong>Served By:</strong></td>
+						<td><strong>{userName}</strong></td>
 					</tr>
 				</tbody>
 			</table>
@@ -244,7 +246,7 @@ const InvoiceTemplate = ({ data }) => {
 
 				<small style={{ position: "absolute", bottom: 0, left: 0, right: 0, textAlign: "center" }}>
 					<strong>
-						{`**This is a sample invoice just for testing**`}
+						{`**This is a test invoice from gra.payload.jamesakweter.tech**`}
 					</strong>
 				</small>
 			</table>
