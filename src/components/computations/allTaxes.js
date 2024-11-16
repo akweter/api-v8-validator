@@ -6,12 +6,6 @@ const DiscountType = (item, header) => {
     return discountType === 'GENERAL' ? (quantity * unitPrice) - discountAmount : (quantity * unitPrice);
 };
 
-/* 
-    Remove certain fields from the items array
-    At the moment this is a bug that will be fixed in future
-    There should not be document level field slipped into item 
-    level array.
-*/
 const trimPayloadItems = (item) => {
     const { 
         totalVat, 
@@ -28,6 +22,7 @@ const trimPayloadItems = (item) => {
         totalAmount,
         saleType,
         calculationType,
+        flag,
         ...rest 
     } = item;
     return rest;
@@ -57,8 +52,10 @@ export const Export = (item, header) =>{
 }
 
 // Calculate levy amounts and total VAT based on item category for exclusive tax
-const LevyAndVat = (itemCategory, itemSubtotal, vatableAmount = 1) => {
+const LevyAndVat = (itemCategory, itemSubtotal, vatableAmount = 1, levyMapping) => {
     const exclusiveAmt = itemSubtotal / vatableAmount;
+    // console.log(`levyMapping`, levyMapping);
+    
     const levy = {
         levyAmountA: "",
         levyAmountB: "",
@@ -68,37 +65,46 @@ const LevyAndVat = (itemCategory, itemSubtotal, vatableAmount = 1) => {
         totalVat: 0,
         vatableAmt: 0
     };
+
+    const levyPercentages = {
+        nhil: 0.025,
+        getfund: 0.025,
+        covid: 0.01,
+        cst: 0.05,
+        tourism: 0.01
+    };
+
     switch (itemCategory) {
         case "EXM":
             break;
         case "TRSM":
-            levy.levyAmountA = 0.025 * exclusiveAmt;
-            levy.levyAmountB = 0.025 * exclusiveAmt;
-            levy.levyAmountC = 0.01 * exclusiveAmt;
-            levy.levyAmountE = 0.01 * exclusiveAmt;
-            levy.vatableAmt = exclusiveAmt + levy.levyAmountA + levy.levyAmountB + levy.levyAmountC;
-            levy.totalVat = 0.15 * levy.vatableAmt;
+            if (levyMapping.tourism) levy.levyAmountA = levyPercentages.nhil * exclusiveAmt;
+            if (levyMapping.cst) levy.levyAmountB = levyPercentages.getfund * exclusiveAmt;
+            if (levyMapping.covid) levy.levyAmountC = levyPercentages.covid * exclusiveAmt;
+            if (levyMapping.tourism) levy.levyAmountE = levyPercentages.tourism * exclusiveAmt;
+            levy.vatableAmt = exclusiveAmt + levy.levyAmountA + levy.levyAmountB + levy.levyAmountC + levy.levyAmountE;
+            levy.totalVat = (levyMapping.vatValue * 0.01) * levy.vatableAmt;
             break;
         case "CST":
-            levy.levyAmountA = 0.025 * exclusiveAmt;
-            levy.levyAmountB = 0.025 * exclusiveAmt;
-            levy.levyAmountC = 0.01 * exclusiveAmt;
-            levy.levyAmountD = 0.05 * exclusiveAmt;
+            if (levyMapping.nhil) levy.levyAmountA = levyPercentages.nhil * exclusiveAmt;
+            if (levyMapping.getfund) levy.levyAmountB = levyPercentages.getfund * exclusiveAmt;
+            if (levyMapping.covid) levy.levyAmountC = levyPercentages.covid * exclusiveAmt;
+            if (levyMapping.cst) levy.levyAmountD = levyPercentages.cst * exclusiveAmt;
             levy.vatableAmt = exclusiveAmt + levy.levyAmountA + levy.levyAmountB + levy.levyAmountC + levy.levyAmountD;
-            levy.totalVat = 0.15 * levy.vatableAmt;
+            levy.totalVat = (levyMapping.vatValue * 0.01) * levy.vatableAmt;
             break;
         case "RNT":
-            levy.levyAmountC = 0.01 * exclusiveAmt;
-            levy.vatableAmt = exclusiveAmt + levy.levyAmountC;
-            levy.totalVat = 0.05 * levy.vatableAmt;
+            if (levyMapping.covid) levy.levyAmountC = levyPercentages.covid * exclusiveAmt;
+            levy.vatableAmt = exclusiveAmt;// + levy.levyAmountC;
+            levy.totalVat = (levyMapping.vatValue * 0.01) * levy.vatableAmt;
             break;
         default:
-            levy.levyAmountA = 0.025 * exclusiveAmt;
-            levy.levyAmountB = 0.025 * exclusiveAmt;
-            levy.levyAmountC = 0.01 * exclusiveAmt;
+            if (levyMapping.nhil) levy.levyAmountA = levyPercentages.nhil * exclusiveAmt;
+            if (levyMapping.getfund) levy.levyAmountB = levyPercentages.getfund * exclusiveAmt;
+            if (levyMapping.covid) levy.levyAmountC = levyPercentages.covid * exclusiveAmt;
             levy.vatableAmt = exclusiveAmt + levy.levyAmountA + levy.levyAmountB + levy.levyAmountC;
-            levy.totalVat = 0.15 * levy.vatableAmt;
-            break;
+            levy.totalVat = (levyMapping.vatValue * 0.01) * levy.vatableAmt;
+        break;
     }
     return levy;
 };
@@ -117,67 +123,17 @@ const graVatable = (itemCategory) => {
     }
 };
 
-// // handle refund inclusive tax scenario
-// export const InclusiveTax = (item, header) => {
-//     if (!item || !header) return item;
-
-//     const { saleType } = header;
-//     const { quantity, unitPrice, discountAmount, itemCategory } = item;
-
-//     if (!quantity || !unitPrice) return item;
-
-//     const itemSubtotal = DiscountType(item, header);
-//     const vatableAmount = graVatable(itemCategory);
-//     const { levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalVat } = LevyAndVat(itemCategory, itemSubtotal, vatableAmount);
-
-//     return {
-//         ...item,
-//         levyAmountA: levyAmountA,
-//         levyAmountB: levyAmountB,
-//         levyAmountC: levyAmountC,
-//         levyAmountD: levyAmountD,
-//         levyAmountE: levyAmountE,
-//         totalVat: totalVat,
-//         totalAmount: quantity * unitPrice,
-//         discountAmount: discountAmount,
-//     };
-// };
-
-// // handle refund exclusive tax scenario
-// export const ExclusiveTax = (item, header) => {
-//     if (!item || !header) return item;
-
-//     const { saleType } = header;
-//     const { quantity, unitPrice, itemCategory, discountAmount } = item;
-
-//     if (!quantity || !unitPrice) return item;
-
-//     const itemSubtotal = DiscountType(item, header);
-//     const { levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalVat } = LevyAndVat(itemCategory, itemSubtotal);
-
-//     return {
-//         ...item,
-//         levyAmountA: levyAmountA,
-//         levyAmountB: levyAmountB,
-//         levyAmountC: levyAmountC,
-//         levyAmountD: levyAmountD,
-//         levyAmountE: levyAmountE,
-//         totalVat: totalVat,
-//         totalAmount: quantity * unitPrice,
-//         discountAmount: discountAmount,
-//     };
-// };
-
 const InclusiveAndExclusive = (item, header, inclusiveVAT) => {
     if (!item || !header) return item;
 
-    const { quantity, unitPrice, itemCategory, discountAmount } = item;
+    const { levyMapping } = header;
+    const { quantity, unitPrice, discountAmount } = item;
     if (!quantity || !unitPrice) return item;
 
     const itemSubtotal = DiscountType(item, header);
-    const vatableAmount = graVatable(itemCategory);
+    const vatableAmount = graVatable(levyMapping.itemCategory);
     
-    const vatType = inclusiveVAT ? [itemCategory, itemSubtotal, vatableAmount] : [itemCategory, itemSubtotal];
+    const vatType = inclusiveVAT ? [levyMapping.itemCategory, itemSubtotal, vatableAmount, levyMapping] : [levyMapping.itemCategory, itemSubtotal, '', levyMapping];
     const { levyAmountA, levyAmountB, levyAmountC, levyAmountD, levyAmountE, totalVat } = LevyAndVat(...vatType);
 
     return {
@@ -202,7 +158,6 @@ export const InclusiveTax = (item, header) => {
 export const ExclusiveTax = (item, header) => {
     return InclusiveAndExclusive(item, header, false);
 };
-
 
 // Compute taxes, levies in the header level of the payload
 export const computeStandardTaxes = (header) => {

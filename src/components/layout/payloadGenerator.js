@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 import {
     Button,
@@ -7,6 +7,7 @@ import {
     Toolbar,
     Typography,
     Box,
+    Container,
 } from '@mui/material';
 import Slide from '@mui/material/Slide';
 import GeneratForm from './payloadForm';
@@ -20,6 +21,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export function PayloadGenerator({ setSubmitted, status }){
     const [drop, setDrop] = useState(false);
     const [open, setOpen] = useState(false);
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
+
+    useEffect(() => {
+        const handleResize = () =>  setIsSmallScreen(window.innerWidth < 600);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleOpen = () => { setOpen(true); };
     const handleClose = () => { setOpen(false); };
@@ -36,7 +44,7 @@ export function PayloadGenerator({ setSubmitted, status }){
             </Button>
             <Dialog
                 fullWidth
-                maxWidth="xl"
+                maxWidth="lg"
                 open={open}
                 TransitionComponent={Transition}
                 transitionDuration={1000}
@@ -45,7 +53,7 @@ export function PayloadGenerator({ setSubmitted, status }){
                     <Toolbar sx={{ justifyContent: 'space-between' }}>
                         <img src={logo} width={60} height={60} alt='Logo' />
                         <Typography
-                            variant="h5"
+                            variant = {isSmallScreen ? "body1" : "h5"}
                             sx={{
                                 flex: 1,
                                 textAlign: 'center',
@@ -61,9 +69,9 @@ export function PayloadGenerator({ setSubmitted, status }){
                         </Box>
                     </Toolbar>
                 </AppBar>
-                <div style={{ marginTop: '10px' }}>
+                <Container style={{ marginTop: isSmallScreen ? 80 : 10 }}>
                     < GeneratForm setSubmitted={setSubmitted} setDrop={setDrop} drop={drop} BackdropOpen={setOpen}/>
-                </div>
+                </Container>
             </Dialog>
         </div>
     );

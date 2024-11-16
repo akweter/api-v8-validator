@@ -11,6 +11,7 @@ import TaxpayerTIN from './layout/tinValidator';
 import DateTimeSecondsDisplay from './utilities/time.js';
 import { PayloadGenerator } from './layout/payloadGenerator';
 import APIButton from './layout/postmanAPI.js';
+import ProxyServer from './layout/proxyServer.js';
 
 export default function PayloadValidator() {
     return (
@@ -32,6 +33,7 @@ export default function PayloadValidator() {
                         </Typography>
                         < TaxpayerTIN />
                         < PayloadGenerator />
+                        < ProxyServer />
                         < APIButton />
                         {DateTimeSecondsDisplay()}
                     </Box>

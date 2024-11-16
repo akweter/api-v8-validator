@@ -4,7 +4,6 @@ import {
     FormControl,
     Grid,
     Paper,
-    Box,
     Stack,
     TextField,
     Button,
@@ -17,39 +16,47 @@ import {
     ToggleButton,
     FormControlLabel,
     Checkbox,
+    Backdrop,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    Typography,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { createTheme, styled } from '@mui/material/styles';
-import { ContentCopy } from '@mui/icons-material';
+import { Close, ContentCopy, Key, PostAdd, Save, Send } from '@mui/icons-material';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 
 import { computeStandardTaxes } from '../computations/allTaxes';
-import { itemlistPayload, payloadStructure } from '../utilities/placeholder';
+import { itemlistPayload, leviesState, payloadStructure } from '../utilities/placeholder';
 import { AlertError } from '../utilities/errorHandler';
 import { products } from '../api/products';
 import { verifyTIN } from '../api/request';
 import { writeText } from 'clipboard-polyfill';
+import axios from 'axios';
+import { GRA_ENDPOINT, GRA_KEY, PROXY_ENDPOINT, PROXY_ON_PREM_ENDPOINT } from '../auth/origins';
+import ShowTable from './showTable';
 
-const Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    color: theme.palette.text.secondary,
-    padding: 20,
-    display: 'flex',
-    flexDirection: 'row',
-}));
 const lightTheme = createTheme({ palette: { mode: 'light' } });
 
 /* eslint-disable */
 
 export default function GeneratForm() {
     const [open, setOpen] = useState(false);
+    const [showBtn, showSubmitBtn] = useState(false);
+    const [send, setSend] = useState(false);
     const [load, setLoad] = useState(false);
     const [cashCustomer, setCashCustomer] = useState(false);
+    const [showTable, setShowTable] = useState(false);
+    const [onprem, setOnprem] = useState(false);
     const [header, setHeader] = useState(payloadStructure);
     const [itemlists, setItemLists] = useState(itemlistPayload);
+    const [LeviesTax, setLeviesTax] = useState(leviesState);
+    const [key, setKey] = useState({ key: null, TpReference: null} );
+    const [data, setData] = useState([]);
     const [alert, setAlert] = useState({ message: '', color: 'success' });
-
+    
     // disable customer cash && Update currency for Ghana cedis.
     useEffect(() => {      
         const { currency } = header;
@@ -74,7 +81,9 @@ export default function GeneratForm() {
 
     useEffect(() => {
             const timer = setTimeout(() => {
-                const { quantity, unitPrice, ...filter } = header;
+                const newVal = {...header, levyMapping: LeviesTax}
+                const { quantity, unitPrice, ...filter } = newVal;
+                // console.log('inserting',filter);
                 const result = computeStandardTaxes(filter);
                 const {
                     totalLevy,
@@ -97,7 +106,7 @@ export default function GeneratForm() {
                     quanity and unitPrice update in header state when onchange
                 */
                 setHeader((state) => {
-                    const { quantity, unitPrice, ...fixBug } = state;
+                    const { quantity, unitPrice, levyMapping, ...fixBug } = state;
                     return fixBug;
                 });
             }, 500);
@@ -115,6 +124,36 @@ export default function GeneratForm() {
         const { name, value } = event.target;
         setHeader({ ...header, [name]: value });
         setItemLists({ ...itemlists, [name]: value });
+    };
+
+    // handle levies state onchange
+    const handleLEviesChange = (event) => {
+        const { name, value, type, checked } = event.target;
+        // console.log(`name`,name,`value`,value,`type`,type,'checked',checked);
+        if (name === 'cst' && checked) {
+            setLeviesTax({
+                ...LeviesTax,
+                cst: checked,
+                tourism: false,
+            });
+        } else if (name === 'tourism' && checked) {
+            setLeviesTax({
+                ...LeviesTax,
+                tourism: checked,
+                cst: false,
+            });
+        } else {
+            setLeviesTax({
+                ...LeviesTax,
+                [name]: type === 'checkbox' ? checked : value
+            });
+        }
+    };
+    
+     // handle taxpyer key onchange
+     const handleKeyChange = (event) => {
+        const { name, value } = event.target;
+        setKey({ ...key, [name]: value });
     };
 
     // Reqquest Customer TIN
@@ -141,11 +180,9 @@ export default function GeneratForm() {
     // Discount Type onChnage
     const handleDiscountChange = (event) => {
         const isChecked = event.target.checked;
-        const updatedDiscountType = isChecked ? 'SELECTIVE' : 'GENERAL';
-
         setHeader((prevHeader) => ({
             ...prevHeader,
-            discountType: updatedDiscountType,
+            discountType: isChecked ? 'SELECTIVE' : 'GENERAL',
         }));
     };
 
@@ -222,11 +259,22 @@ export default function GeneratForm() {
                 totalLevy: "",
                 totalAmount: "",
             });
+
+             // Retrieve taxpayer key details from localStorage and update state
+            const storedKey = window.localStorage.getItem('security_key');
+            const storedTpReference = window.localStorage.getItem('taxpayer_ref');
+            if (storedKey) {
+                setKey(prevState => ({ ...prevState, key: storedKey }));
+            }
+            if (storedTpReference) {
+                setKey(prevState => ({ ...prevState, TpReference: storedTpReference }));
+            }
+            showSubmitBtn(true);
         }
     }
 
-    // Submit form to GRA
-    const copyPayload = async () => {
+    // Trim Payload
+    const trimLoad = () => {
         const mandatoryFields = [
             'currency',
             'calculationType',
@@ -241,8 +289,13 @@ export default function GeneratForm() {
             'totalAmount',
             'items'
         ];
-
         const emptyFields = mandatoryFields.filter(field => !header[field] || header[field] === '');
+        return emptyFields;
+    }
+
+    // Submit form to GRA
+    const copyPayload = async () => {
+        const emptyFields = trimLoad();
         if (emptyFields.length > 0) {
             const errorMessage = `${emptyFields.join(', ')} cannot be empty.`;
             setAlert((e) => ({ ...e, message: errorMessage, color: 'error' }));
@@ -262,23 +315,204 @@ export default function GeneratForm() {
         }
     };
 
+    // Open dialog for on-prem Security Key Form
+    const OpenOnprem = () => {
+        setOnprem(true);
+    }
+
+    // Submit payload to On Prem VSDC
+    const sendPayloadToOnprem = async () => {
+        window.localStorage.setItem('security_key', key.key);
+        window.localStorage.setItem('taxpayer_ref', key.TpReference);
+        setOnprem(false);
+        const payload = trimLoad();
+        if (payload.length > 0) {
+            const errorMessage = `${payload.join(', ')} cannot be empty.`;
+            setAlert((e) => ({ ...e, message: errorMessage, color: 'error' }));
+            return setOpen(true);
+        }
+        try {
+            setSend(true);
+            const output = await axios.post(`${PROXY_ON_PREM_ENDPOINT}/invoice`, header, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'endpoint': `http://localhost:8888/api/v1/taxpayer/${key.TpReference}`,
+                    'security_key': key.key
+                }
+            });
+            const response = output.data.response;
+            setData(response);
+            setShowTable(true);
+        }
+        catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                const { response: { data: { message } } } = error;
+                const err = JSON.stringify(message, null, 2);
+                setAlert((e) => ({ ...e, message: err, color: 'error' }));
+            } else {
+                setAlert((e) => ({ ...e, message: "Error sending payload to GRA", color: 'error', header: "Request To GRA Failed!" }));
+            }
+            setOpen(true);
+            setData([]);
+        }
+        setSend(false);
+    }
+
+    // Submit payload to GRA backend
+    const sendPayloadToGRABackend = async () => {
+        const payload = trimLoad();
+        if (payload.length > 0) {
+            const errorMessage = `${payload.join(', ')} cannot be empty.`;
+            setAlert((e) => ({ ...e, message: errorMessage, color: 'error' }));
+            return setOpen(true);
+        }
+        try {
+            setSend(true);
+            const output = await axios.post(`${PROXY_ENDPOINT}/invoice`, header, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'endpoint': GRA_ENDPOINT,
+                    'security_key': GRA_KEY
+                }
+            });
+            const response = output.data.response;
+            setData(response);
+            setShowTable(true);
+        }
+        catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                const { response: { data: { message } } } = error;
+                const err = JSON.stringify(message, null, 2);
+                setAlert((e) => ({ ...e, message: err, color: 'error' }));
+            } else {
+                setAlert((e) => ({ ...e, message: "Error sending payload to GRA", color: 'error', header: "Request To GRA Failed!" }));
+            }
+            setOpen(true);
+            setData([]);
+        }
+        setSend(false);
+    };
+
     // handle alerts
     const handleClose = (event, reason) => { if (reason === 'clickaway') { return; } setOpen(false); };
 
     return (<>
         <ThemeProvider theme={lightTheme}>
+            <Backdrop color='secondary' sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={send}>
+                <CircularProgress size={35} color="inherit" />
+            </Backdrop>
             {alert.message ? <AlertError open={open} alert={alert} handleClose={handleClose} /> : null }
-            <Box
-                sx={{
-                    borderRadius: 2,
-                    bgcolor: 'background.default',
-                    display: 'grid',
-                    flexDirection: 'row',
-                    gridTemplateColumns: { md: '1.2fr 1.8fr' },
-                }}
-            >
-                <Item>
-                    <Grid container spacing={2} py={3}>
+            
+            <Grid container spacing={1} paddingBottom={2} paddingTop={3}>
+                <Grid item xs={12} lg={6} /*order={{ xs: 2, lg: 1 }}*/>
+                    <Grid container spacing={1}>
+                        <Grid container>
+                            <Grid item xs={12} lg={6}>
+                                <Grid container>
+                                    <FormControlLabel
+                                        label="A"
+                                        control={
+                                            <Checkbox
+                                                checked={LeviesTax.nhil}
+                                                name='nhil'
+                                                onChange={handleLEviesChange}
+                                                color="secondary"
+                                            />
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        label="B"
+                                        control={
+                                            <Checkbox
+                                                checked={LeviesTax.getfund}
+                                                name='getfund'
+                                                onChange={handleLEviesChange}
+                                                color="secondary"
+                                            />
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        label="C"
+                                        control={
+                                            <Checkbox
+                                                checked={LeviesTax.covid}
+                                                name='covid'
+                                                onChange={handleLEviesChange}
+                                                color="secondary"
+                                            />
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        label="D"
+                                        control={
+                                            <Checkbox
+                                                checked={LeviesTax.cst}
+                                                name='cst'
+                                                onChange={handleLEviesChange}
+                                                color="secondary"
+                                            />
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        label="E"
+                                        control={
+                                            <Checkbox
+                                                checked={LeviesTax.tourism}
+                                                name='tourism'
+                                                onChange={handleLEviesChange}
+                                                color="secondary"
+                                            />
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        label="Selective Discount"
+                                        control={
+                                            <Checkbox
+                                                checked={header.discountType === 'SELECTIVE'}
+                                                onChange={handleDiscountChange}
+                                                color="secondary"
+                                            />
+                                        }
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12} lg={6} py={2}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={6}>
+                                        <FormControl size='small'>
+                                            <TextField
+                                                label="VAT Value (%)"
+                                                value={LeviesTax.vatValue}
+                                                name='vatValue'
+                                                size='small'
+                                                onChange={handleLEviesChange}
+                                                type='number'
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <FormControl size='small'>
+                                            <InputLabel id="itemCategory">Item category</InputLabel>
+                                            <Select
+                                                labelId="itemCategory"
+                                                id="itemCategory"
+                                                label="itemCategory"
+                                                name="itemCategory"
+                                                value={LeviesTax.itemCategory}
+                                                onChange={handleLEviesChange}
+                                                size='small'
+                                            >
+                                                <MenuItem value=''>Standard</MenuItem>
+                                                <MenuItem value='CST'>CST</MenuItem>
+                                                <MenuItem value='EXM'>Exempted</MenuItem>
+                                                <MenuItem value='RNT'>Rent</MenuItem>
+                                                <MenuItem value='TRSM'>Tourism</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
                         <Grid item xs={3}>
                             <FormControl fullWidth>
                                 <ToggleButtonGroup
@@ -307,19 +541,20 @@ export default function GeneratForm() {
                             </FormControl>
                         </Grid>
                         <>{load ? (<> <Grid item xs={load ? 2 : 0}><CircularProgress size={22} color='primary'/></Grid></>) : null }</>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
                                 <TextField
                                     label="Customer TIN"
                                     value={header.businessPartnerTin}
                                     name='businessPartnerTin'
+                                    disabled={cashCustomer}
                                     size='small'
                                     onChange={handleMainChange}
                                     onBlur={TinRequest}
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
                                 <TextField
                                     label="User Name"
@@ -330,7 +565,7 @@ export default function GeneratForm() {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
                                 <InputLabel id="saleType">SaleType</InputLabel>
                                 <Select
@@ -344,12 +579,10 @@ export default function GeneratForm() {
                                     size='small'
                                 >
                                     <MenuItem value='NORMAL'>Normal</MenuItem>
-                                    {/* <MenuItem value='EXPORT'>Export</MenuItem> */}
-                                    {/* <MenuItem value='RENT'>Real Estate</MenuItem> */}
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
                                 <InputLabel id="flag">Flag</InputLabel>
                                 <Select
@@ -367,36 +600,7 @@ export default function GeneratForm() {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth>
-                                <InputLabel id="calculationType">calculation Type</InputLabel>
-                                <Select
-                                    labelId="calculationType"
-                                    id="calculationType"
-                                    label="calculationType"
-                                    name="calculationType"
-                                    value={header.calculationType}
-                                    onChange={handleMainChange}
-                                    size='small'
-                                >
-                                    <MenuItem value='INCLUSIVE'>Inclusive</MenuItem>
-                                    <MenuItem value='EXCLUSIVE'>Exclusive</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControlLabel
-                                label="Selective Discount"
-                                control={
-                                    <Checkbox
-                                        checked={header.discountType === 'SELECTIVE'}
-                                        onChange={handleDiscountChange}
-                                        color="secondary"
-                                    />
-                                }
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
                                 <InputLabel id="currency">Currency</InputLabel>
                                 <Select
@@ -424,7 +628,7 @@ export default function GeneratForm() {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
                                 <TextField
                                     label="Exchange Rate"
@@ -437,19 +641,24 @@ export default function GeneratForm() {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
-                                <TextField
-                                    label="Group Reference ID"
-                                    type="groupReferenceId"
-                                    value={header.groupReferenceId}
-                                    name='groupReferenceId'
-                                    size='small'
+                                <InputLabel id="calculationType">calculation Type</InputLabel>
+                                <Select
+                                    labelId="calculationType"
+                                    id="calculationType"
+                                    label="calculationType"
+                                    name="calculationType"
+                                    value={header.calculationType}
                                     onChange={handleMainChange}
-                                />
+                                    size='small'
+                                >
+                                    <MenuItem value='INCLUSIVE'>Inclusive</MenuItem>
+                                    <MenuItem value='EXCLUSIVE'>Exclusive</MenuItem>
+                                </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
                                 <DatePicker
                                     selected={header.transactionDate ? new Date(header.transactionDate) : null}
@@ -468,7 +677,44 @@ export default function GeneratForm() {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} lg={6}>
+                            <FormControl fullWidth>
+                                <Button
+                                    fullWidth
+                                    onClick={generateRef}
+                                    size='small'
+                                    variant='contained'
+                                    color='inherit'
+                                >
+                                    Reference
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                            <FormControl fullWidth>
+                                <TextField
+                                    label="Purchase Order"
+                                    value={header.purchaseOrderReference}
+                                    name='purchaseOrderReference'
+                                    size='small'
+                                    onChange={handleMainChange}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                            <FormControl fullWidth>
+                                <TextField
+                                    label="Total Discount"
+                                    type="number"
+                                    value={header.discountAmount}
+                                    name='discountAmount'
+                                    size='small'
+                                    disabled={header.discountType === 'GENERAL' ? true : false}
+                                    onChange={handleMainChange}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
                                 <TextField
                                     label="Voucher Amount"
@@ -480,103 +726,127 @@ export default function GeneratForm() {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth>
-                                <Button
-                                    fullWidth
-                                    onClick={generateRef}
-                                    size='small'
-                                    variant='contained'
-                                    color='inherit'
-                                >
-                                    Generate Reference
-                                </Button>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControl fullWidth>
-                                <Autocomplete
-                                    id="product-search"
-                                    options={products}
-                                    getOptionLabel={(option) => option.title ? option.title : ''}
-                                    disabled={header.calculationType ? false : true}
-                                    onChange={(event, selectedProduct) => {
-                                        if (selectedProduct) {
-                                            setItemLists((oldValue) => ({
-                                                ...oldValue,
-                                                unitPrice: selectedProduct.price,
-                                                description: selectedProduct.title,
-                                                itemCode: selectedProduct.id,
-                                                itemCategory: selectedProduct.category,
-                                                quantity: 1,
-                                            }));
-                                        }
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Search product or service"
-                                            variant="outlined"
-                                            size="small"
-                                            color="primary"
-                                            fullWidth
-                                            key={params.itemCode}
-                                            InputProps={{
-                                                ...params.InputProps,
-                                                endAdornment: (
-                                                    <>
-                                                        {params.InputProps.endAdornment}
-                                                    </>
-                                                ),
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormControl fullWidth>
-                                <TextField
-                                    label="Price / Rate"
-                                    type="number"
-                                    value={itemlists.unitPrice}
-                                    name='unitPrice'
-                                    size='small'
-                                    onChange={handleMainChange}
-                                    disabled={itemlists.description ? false : true}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormControl fullWidth>
-                                <TextField
-                                    label="Quantity / Period"
-                                    type="number"
-                                    value={itemlists.quantity}
-                                    name='quantity'
-                                    size='small'
-                                    onChange={handleMainChange}
-                                    disabled={itemlists.description ? false : true}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormControl fullWidth>
-                                <TextField
-                                    label="Discount"
-                                    type="number"
-                                    value={itemlists.discountAmount}
-                                    name='discountAmount'
-                                    size='small'
-                                    onChange={handleMainChange}
-                                    disabled={itemlists.description ? false : true}
-                                />
-                            </FormControl>
-                        </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <Autocomplete
+                                        id="product-search"
+                                        options={products}
+                                        getOptionLabel={(option) => option.title ? option.title : ''}
+                                        disabled={header.calculationType ? false : true}
+                                        onChange={(event, selectedProduct) => {
+                                            if (selectedProduct) {
+                                                setItemLists((oldValue) => ({
+                                                    ...oldValue,
+                                                    unitPrice: selectedProduct.price,
+                                                    description: selectedProduct.title,
+                                                    itemCode: selectedProduct.id,
+                                                    itemCategory: selectedProduct.category,
+                                                    quantity: 1,
+                                                }));
+                                            }
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Search product or service"
+                                                variant="outlined"
+                                                size="small"
+                                                color="primary"
+                                                fullWidth
+                                                key={params.itemCode}
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    endAdornment: (
+                                                        <>
+                                                            {params.InputProps.endAdornment}
+                                                        </>
+                                                    ),
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </FormControl>
+                            </Grid>
+                        {
+                        header.discountType === 'SELECTIVE' ? <>
+                            <Grid item xs={6}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label="Price / Rate"
+                                        type="number"
+                                        value={itemlists.unitPrice}
+                                        name='unitPrice'
+                                        size='small'
+                                        onChange={handleMainChange}
+                                        disabled={itemlists.description ? false : true}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label="Quantity / Period"
+                                        type="number"
+                                        value={itemlists.quantity}
+                                        name='quantity'
+                                        size='small'
+                                        onChange={handleMainChange}
+                                        disabled={itemlists.description ? false : true}
+                                    />
+                                </FormControl>
+                            </Grid>
+                        </> : <>
+                            <Grid item xs={4}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label="Price / Rate"
+                                        type="number"
+                                        value={itemlists.unitPrice}
+                                        name='unitPrice'
+                                        size='small'
+                                        onChange={handleMainChange}
+                                        disabled={itemlists.description ? false : true}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label="Quantity / Period"
+                                        type="number"
+                                        value={itemlists.quantity}
+                                        name='quantity'
+                                        size='small'
+                                        onChange={handleMainChange}
+                                        disabled={itemlists.description ? false : true}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label="Discount"
+                                        type="number"
+                                        value={itemlists.discountAmount}
+                                        name='discountAmount'
+                                        size='small'
+                                        onChange={handleMainChange}
+                                        disabled={itemlists.description ? false : true}
+                                    />
+                                </FormControl>
+                            </Grid>
+                        </>
+                        }
                         <Grid item xs={6}>
                             <FormControl fullWidth>
                                 <Stack direction="row" spacing={2}>
-                                    <Button onClick={addToCart} fullWidth color='primary' variant="contained" size='large' startIcon={<AddShoppingCartOutlinedIcon />}>
+                                    <Button 
+                                        onClick={addToCart} 
+                                        fullWidth color='primary' 
+                                        variant="contained"
+                                        size='small' 
+                                        startIcon={<AddShoppingCartOutlinedIcon />}
+                                    >
                                         Add Item
                                     </Button>
                                 </Stack>
@@ -585,32 +855,136 @@ export default function GeneratForm() {
                         <Grid item xs={6}>
                             <FormControl fullWidth>
                                 <Stack direction="row" spacing={2}>
-                                    <Button onClick={copyPayload} fullWidth color='success' variant="contained" size='large' startIcon={<ContentCopy />}>
-                                        Copy Payload
+                                    <Button 
+                                        onClick={copyPayload} 
+                                        fullWidth 
+                                        color='success' 
+                                        variant="contained" 
+                                        size='small' 
+                                        startIcon={<ContentCopy />}
+                                    >
+                                        Copy Load
                                     </Button>
                                 </Stack>
                             </FormControl>
                         </Grid>
                     </Grid>
-                </Item>
-                <Item>
+                </Grid>
+
+                <Grid item xs={12} lg={6}>
                     <Grid container>
                         <Grid item xs={12} sx={{
-                            width: 550,
-                            height: 510,
+                            width: 580,
+                            height: 525,
                             background: '#F7FDFE',
                             overflowY: 'scroll'
                         }}>
                             <textarea
                                 type='text'
                                 rows='33'
-                                style={{ width: '85%' }}
+                                style={{ width: '95%' }}
                                 value={JSON.stringify(header, null, 2)}
                             />
                         </Grid>
+                        {showBtn ? <>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <Stack direction="row" spacing={2}>
+                                        <Button
+                                            onClick={sendPayloadToGRABackend} 
+                                            fullWidth 
+                                            color='warning' 
+                                            variant="contained" 
+                                            size='small' 
+                                            startIcon={<Send />}
+                                        >
+                                            Post To GRA cloud
+                                        </Button>
+                                        <Button
+                                            onClick={OpenOnprem} 
+                                            fullWidth 
+                                            color='secondary' 
+                                            variant="contained" 
+                                            size='medium' 
+                                            startIcon={<Send />}
+                                        >
+                                            Post To On-Prem
+                                        </Button>
+                                    </Stack>
+                                </FormControl>
+                            </Grid>
+                        </> : null }
                     </Grid>
-                </Item>
-            </Box>
+                </Grid>
+            </Grid>
+
+            <Dialog open={onprem}>
+                <DialogTitle>
+                    <Typography variant='h5' color='darkblue'>GRA VSDC Security KEY</Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={2} py={3}>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <TextField
+                                    label="Security Key"
+                                    value={key.key}
+                                    size='small'
+                                    name='key'
+                                    onChange={handleKeyChange}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <TextField
+                                    label="Reference"
+                                    value={key.TpReference}
+                                    size='small'
+                                    name='TpReference'
+                                    placeholder='C000000000X-001'
+                                    onChange={handleKeyChange}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth>
+                                <Button
+                                    onClick={sendPayloadToOnprem} 
+                                    fullWidth 
+                                    color='secondary' 
+                                    variant="contained" 
+                                    size='medium' 
+                                    startIcon={<PostAdd />}
+                                >
+                                    Post
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth>
+                                <Button
+                                    onClick={()=> setOnprem(false)} 
+                                    fullWidth 
+                                    color='error' 
+                                    variant="contained" 
+                                    size='medium' 
+                                    startIcon={<Close />}
+                                >
+                                    Cancel
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+            </Dialog>
+            {showTable && (
+                <Dialog open={showTable}>
+                    <DialogContent>
+                        <ShowTable setShowTable={setShowTable} response={data} payload={header}/>
+                    </DialogContent>
+                </Dialog>
+            )}
         </ThemeProvider>
     </>);
 }

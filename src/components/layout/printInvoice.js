@@ -62,7 +62,7 @@ const InvoiceTemplate = ({ data }) => {
 			<table cellSpacing="2" cellPadding="2" align="left" width="100%">
 				<thead style={{ alignContent: 'start' }}>
 					<tr>
-						<td><strong>BILL TO</strong></td>
+						<td><strong>CUSTOMER</strong></td>
 						<td><strong>PAYABLE TO</strong></td>
 						<td><strong>INVOICE #</strong></td>
 					</tr>

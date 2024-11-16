@@ -61,13 +61,13 @@ export const payloadStructure = {
     reference: "",
     groupReferenceId: "",
     purchaseOrderReference: "",
-    items: []
+    items: [],
 }
 
 // GRA Item payload structure
 export const itemlistPayload = {
     itemCode: "",
-    itemCategory: "",
+    // itemCategory: "",
     expireDate: "",
     description: "",
     quantity: "",
@@ -83,4 +83,15 @@ export const itemlistPayload = {
     totalVat: "",
     totalLevy: "",
     totalAmount: ""
+}
+
+// Levies mapping state
+export const  leviesState = {
+    covid: true,
+    nhil: true,
+    getfund: true,
+    tourism: false,
+    cst: false,
+    vatValue: 0,
+    itemCategory: 'EXM',
 }

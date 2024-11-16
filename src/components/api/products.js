@@ -1,152 +1,53 @@
 export const products = [
-    {
-        "id": "EXM12345A1",
-        "title": "EXM - Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-        "price": 109.95,
-        "category": "EXM"
-    },
-    {
-        "id": "EXM23456B2",
-        "title": "EXM - Mens Casual Premium Slim Fit T-Shirts",
-        "price": 22.3,
-        "category": "EXM"
-    },
-    {
-        "id": "EXM34567C3",
-        "title": "EXM - Mens Cotton Jacket",
-        "price": 55.99,
-        "category": "EXM"
-    },
-    {
-        "id": "EXM45678D4",
-        "title": "EXM - Mens Casual Slim Fit",
-        "price": 15.99,
-        "category": "EXM"
-    },
-    {
-        "id": "EXM56789E5",
-        "title": "EXM - Trendy Leather Wallet",
-        "price": 39.95,
-        "category": "EXM"
-    },
-    {
-        "id": "TRSM67890F1",
-        "title": "TRSM - Women's Gold Dragon Chain Bracelet",
-        "price": 695,
-        "category": "TRSM"
-    },
-    {
-        "id": "TRSM78901G2",
-        "title": "TRSM - Solid Gold Petite Micropave",
-        "price": 168,
-        "category": "TRSM"
-    },
-    {
-        "id": "TRSM89012H3",
-        "title": "TRSM - White Gold Plated Princess",
-        "price": 9.99,
-        "category": "TRSM"
-    },
-    {
-        "id": "TRSM90123I4",
-        "title": "TRSM - Pierced Rose Gold Plated Stainless Steel",
-        "price": 10.99,
-        "category": "TRSM"
-    },
-    {
-        "id": "TRSM01234J5",
-        "title": "TRSM - Luxury Hotel Bathrobe",
-        "price": 75,
-        "category": "TRSM"
-    },
-    {
-        "id": "CST12345K6",
-        "title": "CST - WD 2TB Elements Portable External Hard Drive - USB 3.0",
-        "price": 64,
-        "category": "CST"
-    },
-    {
-        "id": "CST23456L7",
-        "title": "CST - SanDisk SSD PLUS 1TB Internal SSD - SATA III 6 Gb/s",
-        "price": 109,
-        "category": "CST"
-    },
-    {
-        "id": "CST34567M8",
-        "title": "CST - Silicon Power 256GB SSD 3D NAND A55 SLC SATA III 2.5",
-        "price": 109,
-        "category": "CST"
-    },
-    {
-        "id": "CST45678N9",
-        "title": "CST - Gaming Drive Works with Playstation 4 External Hard Drive",
-        "price": 114,
-        "category": "CST"
-    },
-    {
-        "id": "CST56789O0",
-        "title": "CST - Acer SB220Q bi 21.5 inches Full HD (1920 x 1080) IPS Ultra-Thin",
-        "price": 599,
-        "category": "CST"
-    },
-    {
-        "id": "RNT12345P1",
-        "title": "RNT - Luxury Apartment in Downtown Area",
-        "price": 150000,
-        "category": "RNT"
-    },
-    {
-        "id": "RNT23456Q2",
-        "title": "RNT - Modern Studio Loft with Rooftop Access",
-        "price": 250000,
-        "category": "RNT"
-    },
-    {
-        "id": "RNT34567R3",
-        "title": "RNT - Spacious Family Home with Large Backyard",
-        "price": 350000,
-        "category": "RNT"
-    },
-    {
-        "id": "RNT45678S4",
-        "title": "RNT - Elegant Townhouse in Suburban Area",
-        "price": 275000,
-        "category": "RNT"
-    },
-    {
-        "id": "RNT56789T5",
-        "title": "RNT - Cozy Cottage Near the Beach",
-        "price": 200000,
-        "category": "RNT"
-    },
-    {
-        "id": "STD12345U6",
-        "title": "STD - BIYLACLESEN Women's 3-in-1 Snowboard Jacket Winter Coats",
-        "price": 56.99,
-        "category": ""
-    },
-    {
-        "id": "STD23456V7",
-        "title": "STD - Women's Removable Hooded Faux Leather Moto Biker Jacket",
-        "price": 29.95,
-        "category": ""
-    },
-    {
-        "id": "STD34567W8",
-        "title": "STD - Rain Jacket Women Windbreaker Striped Climbing Raincoats",
-        "price": 39.99,
-        "category": ""
-    },
-    {
-        "id": "STD45678X9",
-        "title": "STD - MBJ Women's Solid Short Sleeve Boat Neck V",
-        "price": 9.85,
-        "category": ""
-    },
-    {
-        "id": "STD56789Y0",
-        "title": "STD - Opna Women's Short Sleeve Moisture",
-        "price": 7.95,
-        "category": ""
-    }
+    { "id": "VLD0001", "title": "3-in-1 Snowboard Jacket", "price": 56.99 },
+    { "id": "VLD0002", "title": "Mountain Hiking Boots", "price": 89.99 },
+    { "id": "VLD0003", "title": "Waterproof Ski Pants", "price": 45.50 },
+    { "id": "VLD0004", "title": "Winter Sports Gloves", "price": 19.99 },
+    { "id": "VLD0005", "title": "Downhill Ski Helmet", "price": 89.00 },
+    { "id": "VLD0006", "title": "Snowboard Bindings", "price": 129.99 },
+    { "id": "VLD0007", "title": "Thermal Ski Socks", "price": 12.99 },
+    { "id": "VLD0008", "title": "Insulated Ski Jacket", "price": 119.95 },
+    { "id": "VLD0009", "title": "Performance Ski Goggles", "price": 45.00 },
+    { "id": "VLD0010", "title": "Snowboard Boot Warmers", "price": 24.99 },
+    { "id": "VLD0011", "title": "Windproof Winter Scarf", "price": 16.50 },
+    { "id": "VLD0012", "title": "Fleece Lined Beanie", "price": 14.99 },
+    { "id": "VLD0013", "title": "Heavy Duty Ski Poles", "price": 45.75 },
+    { "id": "VLD0014", "title": "Snowboard Backpack", "price": 78.99 },
+    { "id": "VLD0015", "title": "Ski Lift Pass Holder", "price": 9.99 },
+    { "id": "VLD0016", "title": "Snowshoes for Hiking", "price": 120.00 },
+    { "id": "VLD0017", "title": "Cross-Country Ski Skis", "price": 160.00 },
+    { "id": "VLD0018", "title": "Thermal Winter Pants", "price": 59.99 },
+    { "id": "VLD0019", "title": "Snowboard Wax Kit", "price": 29.99 },
+    { "id": "VLD0020", "title": "Snowboard Socks Set", "price": 22.50 },
+    { "id": "VLD0021", "title": "Snowboard Boots", "price": 110.00 },
+    { "id": "VLD0022", "title": "Outdoor Ski Jacket", "price": 95.00 },
+    { "id": "VLD0023", "title": "Snowboard Helmet", "price": 75.99 },
+    { "id": "VLD0024", "title": "Thermal Base Layer Set", "price": 39.99 },
+    { "id": "VLD0025", "title": "Snowboard Tuning Kit", "price": 26.50 },
+    { "id": "VLD0026", "title": "Waterproof Snow Pants", "price": 58.00 },
+    { "id": "VLD0027", "title": "Insulated Ski Gloves", "price": 34.99 },
+    { "id": "VLD0028", "title": "Snowproof Ski Jacket", "price": 99.99 },
+    { "id": "VLD0029", "title": "Winter Sports Mask", "price": 17.50 },
+    { "id": "VLD0030", "title": "Advanced Ski Boots", "price": 140.00 },
+    { "id": "VLD0031", "title": "Ski and Snowboard Gaiters", "price": 14.99 },
+    { "id": "VLD0032", "title": "Thermal Ski Underwear", "price": 28.99 },
+    { "id": "VLD0033", "title": "Snowboard Gloves with Grip", "price": 32.50 },
+    { "id": "VLD0034", "title": "Outdoor Sports Backpack", "price": 65.00 },
+    { "id": "VLD0035", "title": "Waterproof Ski Gloves", "price": 24.99 },
+    { "id": "VLD0036", "title": "Ski and Snowboard Poles", "price": 39.99 },
+    { "id": "VLD0037", "title": "Heavy-Duty Winter Jacket", "price": 120.50 },
+    { "id": "VLD0038", "title": "Snowboard Travel Bag", "price": 49.99 },
+    { "id": "VLD0039", "title": "Compression Ski Socks", "price": 18.99 },
+    { "id": "VLD0040", "title": "Insulated Winter Hat", "price": 22.00 },
+    { "id": "VLD0041", "title": "Ski Neck Gaiter", "price": 13.50 },
+    { "id": "VLD0042", "title": "Snowboard Edge Tuning Tool", "price": 21.99 },
+    { "id": "VLD0043", "title": "Snowboard Bindings Set", "price": 135.00 },
+    { "id": "VLD0044", "title": "Thermal Winter Boots", "price": 105.99 },
+    { "id": "VLD0045", "title": "Ski Pass Case with Keychain", "price": 9.00 },
+    { "id": "VLD0046", "title": "Portable Ski Boot Dryer", "price": 50.00 },
+    { "id": "VLD0047", "title": "Snowboard Repair Kit", "price": 19.99 },
+    { "id": "VLD0048", "title": "Winter Sports Water Bottle", "price": 15.50 },
+    { "id": "VLD0049", "title": "Ski Boot Bag", "price": 39.99 },
+    { "id": "VLD0050", "title": "Ski Rack for Car", "price": 99.00 }
 ];
+
